@@ -1,0 +1,267 @@
+2025-07-07 00:11:11,687 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 00:11:11,687 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 00:11:11,687 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 00:11:11,700 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 00:11:11,922 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 00:11:11,922 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 00:11:34,829 - __main__ - INFO - Reconocimiento iniciado
+2025-07-07 00:11:43,630 - __main__ - INFO - Texto reconocido: La prueba de reconocimiento.... (confianza: 0.00)
+2025-07-07 00:11:44,202 - __main__ - INFO - Texto enviado a Claude: La prueba de reconocimiento....
+2025-07-07 00:11:53,028 - __main__ - INFO - Texto reconocido: Hasta ahora.... (confianza: 0.00)
+2025-07-07 00:11:53,515 - __main__ - INFO - Texto enviado a Claude: Hasta ahora....
+2025-07-07 00:12:02,463 - __main__ - INFO - Texto reconocido: La prueba de reconocimien.... (confianza: 0.00)
+2025-07-07 00:12:03,028 - __main__ - INFO - Texto enviado a Claude: La prueba de reconocimien....
+2025-07-07 00:12:05,585 - __main__ - INFO - Texto reconocido: Satisfactorio.... (confianza: 0.00)
+2025-07-07 00:12:06,050 - __main__ - INFO - Texto enviado a Claude: Satisfactorio....
+2025-07-07 00:12:11,719 - __main__ - INFO - Texto reconocido: Escribiendo todos los.... (confianza: 0.00)
+2025-07-07 00:12:12,228 - __main__ - INFO - Texto enviado a Claude: Escribiendo todos los....
+2025-07-07 00:12:24,132 - __main__ - INFO - Texto reconocido: Sin embargo.... (confianza: 0.00)
+2025-07-07 00:12:24,552 - __main__ - INFO - Texto enviado a Claude: Sin embargo....
+2025-07-07 00:12:27,090 - __main__ - INFO - Texto reconocido: Estoy notando.... (confianza: 0.00)
+2025-07-07 00:12:27,574 - __main__ - INFO - Texto enviado a Claude: Estoy notando....
+2025-07-07 00:12:39,859 - __main__ - INFO - Texto reconocido: En las frases largas.... (confianza: 0.00)
+2025-07-07 00:12:40,347 - __main__ - INFO - Texto enviado a Claude: En las frases largas....
+2025-07-07 00:12:43,307 - __main__ - INFO - Texto reconocido: Se copian todas las palabras.... (confianza: 0.00)
+2025-07-07 00:12:43,866 - __main__ - INFO - Texto enviado a Claude: Se copian todas las palabras....
+2025-07-07 00:12:52,366 - __main__ - INFO - Texto reconocido: Y hablo más pausado.... (confianza: 0.00)
+2025-07-07 00:12:52,853 - __main__ - INFO - Texto enviado a Claude: Y hablo más pausado....
+2025-07-07 00:12:58,425 - __main__ - INFO - Texto reconocido: El sistema lo reconoce.... (confianza: 0.00)
+2025-07-07 00:12:58,933 - __main__ - INFO - Texto enviado a Claude: El sistema lo reconoce....
+2025-07-07 00:13:13,520 - __main__ - INFO - Texto reconocido: Por ejemplo.... (confianza: 0.00)
+2025-07-07 00:13:13,965 - __main__ - INFO - Texto enviado a Claude: Por ejemplo....
+2025-07-07 00:13:20,229 - __main__ - INFO - Texto reconocido: El sistema lo reconoce.... (confianza: 0.00)
+2025-07-07 00:13:20,750 - __main__ - INFO - Texto enviado a Claude: El sistema lo reconoce....
+2025-07-07 00:13:29,480 - __main__ - INFO - Texto reconocido: La palabra mejor.... (confianza: 0.00)
+2025-07-07 00:13:29,997 - __main__ - INFO - Texto enviado a Claude: La palabra mejor....
+2025-07-07 00:13:40,261 - __main__ - INFO - Texto reconocido: Falta al final esa palabra.... (confianza: 0.00)
+2025-07-07 00:13:40,815 - __main__ - INFO - Texto enviado a Claude: Falta al final esa palabra....
+2025-07-07 00:14:09,223 - __main__ - INFO - Reconocimiento detenido
+2025-07-07 00:27:44,126 - __main__ - INFO - Transcripciones guardadas: /home/zapataperezluis/voice-bridge-claude/logs/transcripciones_patologia_20250707_002744.txt
+2025-07-07 00:27:44,126 - __main__ - INFO - Voice Bridge cerrado
+2025-07-07 00:28:18,335 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 00:28:18,335 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 00:28:18,335 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 00:28:18,347 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 00:28:18,571 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 00:28:18,572 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 00:28:43,517 - __main__ - INFO - Reconocimiento iniciado
+2025-07-07 00:28:56,929 - __main__ - INFO - Texto reconocido: Cloud observo la biopsia de piel, una hiperquerato... (confianza: 0.61)
+2025-07-07 00:28:57,831 - __main__ - INFO - Texto enviado a Claude: Cloud observo la biopsia de piel, una hiperquerato...
+2025-07-07 00:28:59,063 - __main__ - INFO - Texto reconocido: En la capa basal.... (confianza: 0.80)
+2025-07-07 00:28:59,571 - __main__ - INFO - Texto enviado a Claude: En la capa basal....
+2025-07-07 00:29:02,966 - __main__ - INFO - Texto reconocido: Que muestran empleomorfismo nuclear.... (confianza: 0.66)
+2025-07-07 00:29:03,539 - __main__ - INFO - Texto enviado a Claude: Que muestran empleomorfismo nuclear....
+2025-07-07 00:29:10,605 - __main__ - INFO - Texto reconocido: Invasión focal de la dermis papilar compatible con... (confianza: 0.76)
+2025-07-07 00:29:11,473 - __main__ - INFO - Texto enviado a Claude: Invasión focal de la dermis papilar compatible con...
+2025-07-07 00:29:20,280 - __main__ - INFO - Reconocimiento detenido
+2025-07-07 00:33:23,731 - __main__ - INFO - Transcripciones guardadas: /home/zapataperezluis/voice-bridge-claude/logs/transcripciones_patologia_20250707_003323.txt
+2025-07-07 00:33:23,731 - __main__ - INFO - Voice Bridge cerrado
+2025-07-07 01:24:52,048 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 01:24:52,048 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 01:24:52,048 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 01:25:10,546 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 01:25:10,546 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 01:25:10,546 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 01:32:47,186 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 01:32:47,186 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 01:32:47,186 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 01:40:05,633 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 01:40:05,633 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 01:40:05,633 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 01:40:05,645 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 01:40:05,866 - __main__ - INFO - Diccionario frases_completas.txt: 26 términos cargados
+2025-07-07 01:40:05,867 - __main__ - INFO - Diccionario patologia_molecular.txt: 69 términos cargados
+2025-07-07 01:40:05,867 - __main__ - INFO - Total términos médicos personalizados: 95
+2025-07-07 01:40:05,867 - __main__ - INFO - Términos médicos aplicados con prioridad: 95
+2025-07-07 01:40:05,868 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 01:40:05,868 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 01:40:37,931 - __main__ - ERROR - Error iniciando reconocimiento: Exception with error code: 
+[CALL STACK BEGIN]
+
+/home/zapataperezluis/voice-bridge-claude/voice-bridge-project/.venv/lib/python3.12/site-packages/azure/cognitiveservices/speech/libMicrosoft.CognitiveServices.Speech.core.so(+0x13a7e8) [0x744c7c73a7e8]
+/home/zapataperezluis/voice-bridge-claude/voice-bridge-project/.venv/lib/python3.12/site-packages/azure/cognitiveservices/speech/libMicrosoft.CognitiveServices.Speech.core.so(+0x910a5) [0x744c7c6910a5]
+/home/zapataperezluis/voice-bridge-claude/voice-bridge-project/.venv/lib/python3.12/site-packages/azure/cognitiveservices/speech/libMicrosoft.CognitiveServices.Speech.core.so(recognizer_start_continuous_recognition_async+0x82) [0x744c7c7be438]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/../../libffi.so.8(+0xa052) [0x744c7ccf5052]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/../../libffi.so.8(+0x8925) [0x744c7ccf3925]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/../../libffi.so.8(ffi_call+0xde) [0x744c7ccf406e]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so(+0x134a9) [0x744c7cd0f4a9]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so(+0x8b31) [0x744c7cd04b31]
+python3(_PyObject_Call+0xb5) [0x6132a9db74a5]
+python3(+0x113688) [0x6132a9c84688]
+python3(+0x26503c) [0x6132a9dd603c]
+python3(+0x264be8) [0x6132a9dd5be8]
+python3(+0x113688) [0x6132a9c84688]
+python3(+0x26503c) [0x6132a9dd603c]
+python3(+0x264be8) [0x6132a9dd5be8]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/_tkinter.cpython-312-x86_64-linux-gnu.so(+0x7a21) [0x744c7dc34a21]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/../../libtcl8.6.so(TclNRRunCallbacks+0x71) [0x744c7cfa3ce1]
+[CALL STACK END]
+
+Exception with an error code: 0x1e (SPXERR_SWITCH_MODE_NOT_ALLOWED)
+2025-07-07 01:44:32,226 - __main__ - INFO - Voice Bridge cerrado
+2025-07-07 01:44:48,853 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 01:44:48,853 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 01:44:48,853 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 01:44:48,865 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 01:44:49,087 - __main__ - INFO - Diccionario frases_completas.txt: 26 términos cargados
+2025-07-07 01:44:49,088 - __main__ - INFO - Diccionario patologia_molecular.txt: 69 términos cargados
+2025-07-07 01:44:49,088 - __main__ - INFO - Total términos médicos personalizados: 95
+2025-07-07 01:44:49,089 - __main__ - INFO - Términos médicos aplicados con prioridad: 95
+2025-07-07 01:44:49,089 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 01:44:49,089 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 01:44:56,722 - __main__ - ERROR - Error iniciando reconocimiento: Exception with error code: 
+[CALL STACK BEGIN]
+
+/home/zapataperezluis/voice-bridge-claude/voice-bridge-project/.venv/lib/python3.12/site-packages/azure/cognitiveservices/speech/libMicrosoft.CognitiveServices.Speech.core.so(+0x13a7e8) [0x74dbfed3a7e8]
+/home/zapataperezluis/voice-bridge-claude/voice-bridge-project/.venv/lib/python3.12/site-packages/azure/cognitiveservices/speech/libMicrosoft.CognitiveServices.Speech.core.so(+0x910a5) [0x74dbfec910a5]
+/home/zapataperezluis/voice-bridge-claude/voice-bridge-project/.venv/lib/python3.12/site-packages/azure/cognitiveservices/speech/libMicrosoft.CognitiveServices.Speech.core.so(recognizer_start_continuous_recognition_async+0x82) [0x74dbfedbe438]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/../../libffi.so.8(+0xa052) [0x74dbff988052]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/../../libffi.so.8(+0x8925) [0x74dbff986925]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/../../libffi.so.8(ffi_call+0xde) [0x74dbff98706e]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so(+0x134a9) [0x74dbff29d4a9]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so(+0x8b31) [0x74dbff292b31]
+python3(_PyObject_Call+0xb5) [0x5a60c7c374a5]
+python3(+0x113688) [0x5a60c7b04688]
+python3(+0x26503c) [0x5a60c7c5603c]
+python3(+0x264be8) [0x5a60c7c55be8]
+python3(+0x113688) [0x5a60c7b04688]
+python3(+0x26503c) [0x5a60c7c5603c]
+python3(+0x264be8) [0x5a60c7c55be8]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/_tkinter.cpython-312-x86_64-linux-gnu.so(+0x7a21) [0x74dbff9b1a21]
+/home/zapataperezluis/miniconda3/lib/python3.12/lib-dynload/../../libtcl8.6.so(TclNRRunCallbacks+0x71) [0x74dbff55dce1]
+[CALL STACK END]
+
+Exception with an error code: 0x1e (SPXERR_SWITCH_MODE_NOT_ALLOWED)
+2025-07-07 01:46:44,526 - __main__ - INFO - Voice Bridge cerrado
+2025-07-07 02:02:21,725 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 02:02:21,725 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 02:02:21,730 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 02:02:53,979 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 02:02:53,979 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 02:02:53,979 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 02:02:53,991 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 02:02:54,213 - __main__ - INFO - Diccionario frases_completas.txt: 26 términos cargados
+2025-07-07 02:02:54,213 - __main__ - INFO - Diccionario patologia_molecular.txt: 69 términos cargados
+2025-07-07 02:02:54,213 - __main__ - INFO - Total términos médicos personalizados: 95
+2025-07-07 02:02:54,214 - __main__ - INFO - Términos médicos aplicados con prioridad: 95
+2025-07-07 02:02:54,214 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 02:02:54,214 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 02:02:56,550 - __main__ - INFO - Reconocimiento iniciado
+2025-07-07 02:03:04,071 - __main__ - INFO - Reconocimiento detenido
+2025-07-07 02:04:20,346 - __main__ - INFO - Reconocimiento iniciado
+2025-07-07 02:04:31,220 - __main__ - INFO - Texto reconocido: Cloud veo abundantes células.... (confianza: 0.69)
+2025-07-07 02:04:31,851 - __main__ - INFO - Texto enviado a Claude: Cloud veo abundantes células....
+2025-07-07 02:04:35,816 - __main__ - INFO - Texto reconocido: ¿De las cual es?... (confianza: 0.49)
+2025-07-07 02:04:36,290 - __main__ - INFO - Texto enviado a Claude: ¿De las cual es?...
+2025-07-07 02:05:05,390 - __main__ - INFO - Reconocimiento detenido
+2025-07-07 02:06:56,162 - __main__ - INFO - Reconocimiento iniciado
+2025-07-07 02:07:27,550 - __main__ - INFO - Texto reconocido: Creo que no es importante en este momento que apre... (confianza: 0.91)
+2025-07-07 02:07:29,302 - __main__ - INFO - Texto enviado a Claude: Creo que no es importante en este momento que apre...
+2025-07-07 02:08:11,644 - __main__ - INFO - Texto reconocido: Sin embargo, hay algo que no estoy viendo o escuch... (confianza: 0.76)
+2025-07-07 02:08:12,572 - __main__ - INFO - Texto enviado a Claude: Sin embargo, hay algo que no estoy viendo o escuch...
+2025-07-07 02:09:04,651 - __main__ - INFO - Reconocimiento detenido
+2025-07-07 02:11:38,217 - __main__ - INFO - Reconocimiento iniciado
+2025-07-07 02:11:49,034 - __main__ - INFO - Reconocimiento detenido
+2025-07-07 02:11:59,159 - __main__ - INFO - Reconocimiento iniciado
+2025-07-07 02:12:24,360 - __main__ - INFO - Texto reconocido: ¿Me puedes dar una respuesta por voz?... (confianza: 0.80)
+2025-07-07 02:12:25,003 - __main__ - INFO - Texto enviado a Claude: ¿Me puedes dar una respuesta por voz?...
+2025-07-07 02:12:51,267 - __main__ - INFO - Texto reconocido: ¿Me puedes dar una respuesta por el tts de Voice b... (confianza: 0.59)
+2025-07-07 02:12:52,024 - __main__ - INFO - Texto enviado a Claude: ¿Me puedes dar una respuesta por el tts de Voice b...
+2025-07-07 02:13:44,501 - __main__ - INFO - Texto reconocido: Estoy escuchando reconocimiento iniciado.... (confianza: 0.89)
+2025-07-07 02:13:45,177 - __main__ - INFO - Texto enviado a Claude: Estoy escuchando reconocimiento iniciado....
+2025-07-07 02:14:22,188 - __main__ - INFO - Texto reconocido: Pleomorfismo nuclear.... (confianza: 0.80)
+2025-07-07 02:14:22,694 - __main__ - INFO - Texto enviado a Claude: Pleomorfismo nuclear....
+2025-07-07 02:14:26,129 - __main__ - INFO - Texto reconocido: Carcinoma, basocelular.... (confianza: 0.93)
+2025-07-07 02:14:26,683 - __main__ - INFO - Texto enviado a Claude: Carcinoma, basocelular....
+2025-07-07 02:14:42,030 - __main__ - INFO - Texto reconocido: Día intestinal.... (confianza: 0.39)
+2025-07-07 02:14:42,542 - __main__ - INFO - Texto enviado a Claude: Día intestinal....
+2025-07-07 02:15:55,503 - __main__ - INFO - Texto reconocido: Observó en la biopsia de piel una para queratosis ... (confianza: 0.79)
+2025-07-07 02:15:57,289 - __main__ - INFO - Texto enviado a Claude: Observó en la biopsia de piel una para queratosis ...
+2025-07-07 02:16:58,728 - __main__ - INFO - Texto reconocido: Pero.... (confianza: 0.95)
+2025-07-07 02:16:59,120 - __main__ - INFO - Texto enviado a Claude: Pero....
+2025-07-07 02:17:39,982 - __main__ - INFO - Texto reconocido: Estoy en el microscopio cuando estoy haciendo el d... (confianza: 0.80)
+2025-07-07 02:17:41,522 - __main__ - INFO - Texto enviado a Claude: Estoy en el microscopio cuando estoy haciendo el d...
+2025-07-07 02:18:18,938 - __main__ - INFO - Reconocimiento detenido
+2025-07-07 02:35:02,954 - __main__ - INFO - Transcripciones guardadas: /home/zapataperezluis/voice-bridge-claude/logs/transcripciones_patologia_20250707_023502.txt
+2025-07-07 02:35:02,954 - __main__ - INFO - Voice Bridge cerrado
+2025-07-07 02:46:37,195 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 02:46:37,196 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 02:46:37,196 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 02:46:37,208 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 02:49:25,536 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 02:49:25,536 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 02:49:25,536 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 02:49:25,548 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 03:05:52,678 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 03:05:52,679 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 03:05:52,679 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 03:05:52,691 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 03:05:52,919 - __main__ - INFO - Diccionario frases_completas.txt: 26 términos cargados
+2025-07-07 03:05:52,919 - __main__ - INFO - Diccionario patologia_molecular.txt: 69 términos cargados
+2025-07-07 03:05:52,919 - __main__ - INFO - Total términos médicos personalizados: 95
+2025-07-07 03:05:52,920 - __main__ - INFO - Términos médicos aplicados con prioridad: 95
+2025-07-07 03:05:52,920 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 03:05:52,920 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 03:06:57,681 - __main__ - INFO - Voice Bridge cerrado
+2025-07-07 03:14:30,868 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 03:14:30,869 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 03:14:30,869 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 03:14:30,881 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 03:14:31,106 - __main__ - INFO - Diccionario frases_completas.txt: 26 términos cargados
+2025-07-07 03:14:31,106 - __main__ - INFO - Diccionario patologia_molecular.txt: 69 términos cargados
+2025-07-07 03:14:31,106 - __main__ - INFO - Total términos médicos personalizados: 95
+2025-07-07 03:14:31,107 - __main__ - INFO - Términos médicos aplicados con prioridad: 95
+2025-07-07 03:14:31,107 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 03:14:31,108 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 03:14:34,460 - __main__ - INFO - Voice Bridge cerrado
+2025-07-07 03:17:40,657 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 03:17:40,658 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 03:17:40,658 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 03:17:40,670 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 03:17:40,896 - __main__ - INFO - Diccionario frases_completas.txt: 26 términos cargados
+2025-07-07 03:17:40,896 - __main__ - INFO - Diccionario patologia_molecular.txt: 69 términos cargados
+2025-07-07 03:17:40,896 - __main__ - INFO - Total términos médicos personalizados: 95
+2025-07-07 03:17:40,897 - __main__ - INFO - Términos médicos aplicados con prioridad: 95
+2025-07-07 03:17:40,898 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 03:17:40,898 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 03:17:44,245 - __main__ - INFO - Voice Bridge cerrado
+2025-07-07 03:25:55,403 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 03:25:55,403 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 03:25:55,403 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 03:25:55,415 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 03:25:55,645 - __main__ - INFO - Diccionario frases_completas.txt: 26 términos cargados
+2025-07-07 03:25:55,646 - __main__ - INFO - Diccionario patologia_molecular.txt: 69 términos cargados
+2025-07-07 03:25:55,646 - __main__ - INFO - Total términos médicos personalizados: 95
+2025-07-07 03:25:55,646 - __main__ - INFO - Términos médicos aplicados con prioridad: 95
+2025-07-07 03:25:55,647 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 03:25:55,647 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 03:26:02,626 - __main__ - INFO - Voice Bridge cerrado
+2025-07-07 03:39:12,071 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 03:39:12,071 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 03:39:12,071 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 03:39:12,083 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 03:39:12,309 - __main__ - INFO - Diccionario frases_completas.txt: 26 términos cargados
+2025-07-07 03:39:12,309 - __main__ - INFO - Diccionario patologia_molecular.txt: 69 términos cargados
+2025-07-07 03:39:12,309 - __main__ - INFO - Total términos médicos personalizados: 95
+2025-07-07 03:39:12,310 - __main__ - INFO - Términos médicos aplicados con prioridad: 95
+2025-07-07 03:39:12,310 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 03:39:12,310 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 03:44:44,109 - __main__ - INFO - Voice Bridge cerrado
+2025-07-07 03:44:46,632 - __main__ - INFO - === Iniciando Voice Bridge Pathology ===
+2025-07-07 03:44:46,632 - __main__ - INFO - Configuración cargada desde: /home/zapataperezluis/voice-bridge-claude/config/voice_bridge_config.ini
+2025-07-07 03:44:46,632 - __main__ - INFO - Configurando Azure Speech - Región: eastus
+2025-07-07 03:44:46,644 - __main__ - INFO - ✅ Azure Speech Services configurado correctamente
+2025-07-07 03:44:46,865 - __main__ - INFO - Diccionario frases_completas.txt: 26 términos cargados
+2025-07-07 03:44:46,866 - __main__ - INFO - Diccionario patologia_molecular.txt: 69 términos cargados
+2025-07-07 03:44:46,866 - __main__ - INFO - Total términos médicos personalizados: 95
+2025-07-07 03:44:46,866 - __main__ - INFO - Términos médicos aplicados con prioridad: 95
+2025-07-07 03:44:46,867 - __main__ - INFO - Hotkeys configurados: Ctrl+Shift+V (iniciar), Ctrl+Shift+S (detener)
+2025-07-07 03:44:46,867 - __main__ - INFO - Voice Bridge iniciado correctamente
+2025-07-07 03:45:08,060 - __main__ - INFO - Reconocimiento iniciado
+2025-07-07 03:45:24,526 - __main__ - INFO - Texto reconocido: El sistema ya está funcionando.... (confianza: 0.89)
+2025-07-07 03:45:25,113 - __main__ - INFO - Texto enviado a Claude: El sistema ya está funcionando....
+2025-07-07 03:46:41,854 - __main__ - INFO - Texto reconocido: En obsidian.... (confianza: 0.53)
+2025-07-07 03:46:42,299 - __main__ - INFO - Texto enviado a Claude: En obsidian....
+2025-07-07 03:47:40,224 - __main__ - INFO - Texto reconocido: En obsidian en la carpeta herramientas existe el a... (confianza: 0.81)
+2025-07-07 03:47:41,362 - __main__ - INFO - Texto enviado a Claude: En obsidian en la carpeta herramientas existe el a...
+2025-07-07 03:48:40,853 - __main__ - INFO - Reconocimiento detenido
