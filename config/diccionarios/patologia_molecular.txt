@@ -1,0 +1,86 @@
+# Diccionario Médico Personalizado - Patología Molecular
+# Basado en tu vocabulario real
+# PRIORIDAD ALTA para Azure Speech Services
+
+# === TÉRMINOS CRÍTICOS ===
+Claude
+pleomorfismo nuclear
+carcinoma basocelular
+carcinoma escamocelular
+carcinoma espinocelular
+carcinoma urotelial
+adenocarcinoma
+células atípicas
+células en anillo de sello
+hiperqueratosis
+dermis papilar
+invasión focal
+invasión vascular
+invasión perineural
+compatible con
+
+# === PATOLOGÍA GASTROINTESTINAL (TU ESPECIALIDAD) ===
+mucosa gástrica
+lámina propia
+epitelio foveolar
+células caliciformes
+gastritis crónica
+gastritis erosiva
+gastropatía atrófica
+metaplasia intestinal
+metaplasia columnar
+helicobacter spp
+proceso inflamatorio
+neutrófilos estromales
+folículos linfoides
+hiperplasia foveolar
+atrofia antral
+atrofia corporal
+fibrosis estromal
+congestión vascular
+microhemorragia
+edema
+
+# === CLASIFICACIONES QUE USAS ===
+clasificación de viena
+clasificación de marsh
+olga estadio
+olgim estadio
+protocolo de sydney
+marsh cero
+marsh tres b
+grado isup
+grado who
+
+# === CITOLOGÍAS ===
+células endocervicales
+células exocervicales
+microbiota bacilar
+virus papiloma humano
+cambios coilocíticos
+atipias escamosas
+asc us
+tinción de papanicolau
+
+# === TÉCNICAS ===
+hematoxilina eosina
+inmunohistoquímica
+
+# === ESOFÁGICAS ===
+esofagitis erosiva
+esofagitis crónica
+esófago de barrett
+reflujo gastroesofágico
+hiperplasia basal
+papilomatosis
+epitelio escamoso
+ulceración focal
+erosión epitelial
+
+# === DUODENALES ===
+duodenitis crónica
+vellosidades conservadas
+linfocitos intraepiteliales
+relación vellosidad cripta
+lámina basal
+enfermedad celiaca

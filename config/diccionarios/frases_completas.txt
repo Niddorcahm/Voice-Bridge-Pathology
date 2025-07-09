@@ -1,0 +1,36 @@
+# Frases Médicas Completas - MÁXIMA PRIORIDAD
+# Comandos y frases que usas frecuentemente
+
+# === COMANDOS CLAUDE ===
+Claude observo en la biopsia
+Claude inicio análisis caso
+Claude agregar al informe
+Claude consultar plantilla
+Claude generar informe
+
+# === FRASES DIAGNÓSTICAS REALES ===
+células atípicas en la capa basal
+pleomorfismo nuclear y invasión focal
+compatible con carcinoma basocelular
+invasión de la dermis papilar
+márgenes libres de neoplasia
+se observa hiperqueratosis marcada
+proceso inflamatorio crónico inespecífico
+sin evidencia de malignidad
+se sugiere correlación clínica
+
+# === FRASES GASTROINTESTINALES ===
+gastritis crónica moderada activa
+metaplasia intestinal incompleta antral
+presencia de helicobacter spp
+clasificación uno de viena
+clasificación dos de viena
+olga estadio cero
+olgim estadio uno
+protocolo de sydney
+fragmentos de mucosa gástrica
+lámina propia con edema
+
+# === FRASES CITOLÓGICAS ===
+negativo para células neoplásicas
+muestra satisfactoria
