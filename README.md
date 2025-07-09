@@ -98,7 +98,7 @@ source ~/.bashrc
 
 - **[Installation Guide](INSTALL.md)**: Complete setup instructions
 - **[Usage Guide](USAGE.md)**: Daily workflow and commands
-- **[Troubleshooting](TROUBLESHOOTING.md)**: Common issues and solutions
+- **[Troubleshooting](GitHub/Voice-Bridge-Pathology/TROUBLESHOOTING.md)**: Common issues and solutions
 - **[API Reference](API.md)**: Technical implementation details
 
 ## 🧪 Technical Specifications

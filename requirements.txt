@@ -1,0 +1,137 @@
+# Voice Bridge Pathology - Python Dependencies
+# Core speech recognition and synthesis
+azure-cognitiveservices-speech==1.34.0
+
+# GUI framework (usually included with Python, but listed for completeness)
+# tkinter  # Standard library - no pip install needed
+
+# System automation for Linux integration
+PyAutoGUI==0.9.54
+pynput==1.7.6
+
+# Configuration management
+configparser>=5.3.0  # Standard library - listed for documentation
+
+# Logging and utilities
+pathlib>=1.0.1  # Standard library in Python 3.4+
+
+# Date and time handling
+datetime>=5.4  # Standard library but listed for documentation
+
+# Threading support
+threading>=0.1.0  # Standard library
+
+# Queue management
+queue>=0.1.0  # Standard library
+
+# JSON processing
+json>=2.0.9  # Standard library
+
+# Operating system interface
+os>=0.1.0  # Standard library
+
+# System-specific parameters and functions
+sys>=0.1.0  # Standard library
+
+# Subprocess management
+subprocess>=0.1.0  # Standard library
+
+# Time-related functions
+time>=0.1.0  # Standard library
+
+# ==========================================
+# Development and Testing Dependencies
+# ==========================================
+
+# Testing framework
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.21.0
+
+# Code quality and linting
+black>=23.7.0
+isort>=5.12.0
+flake8>=6.1.0
+mypy>=1.5.0
+
+# Documentation generation
+sphinx>=7.1.0
+sphinx-rtd-theme>=1.3.0
+
+# ==========================================
+# Optional Dependencies for Enhanced Features
+# ==========================================
+
+# Audio processing (optional - for future audio file support)
+# pyaudio>=0.2.11  # Uncomment if needed for advanced audio features
+# wave>=0.0.2  # Standard library for WAV file handling
+
+# Advanced logging (optional)
+# colorlog>=6.7.0  # For colored console output
+
+# Performance monitoring (optional)
+# psutil>=5.9.0  # For system resource monitoring
+
+# ==========================================
+# System-specific Dependencies
+# ==========================================
+
+# Linux-specific tools (installed via system package manager, not pip)
+# These are documented here but installed separately:
+# - wmctrl: sudo apt install wmctrl
+# - xdotool: sudo apt install xdotool
+# - portaudio19-dev: sudo apt install portaudio19-dev (for pyaudio if needed)
+
+# ==========================================
+# Azure Cognitive Services Additional
+# ==========================================
+
+# HTTP requests (usually included, but may be needed for Azure SDK)
+requests>=2.31.0
+urllib3>=2.0.4
+
+# SSL/TLS support (standard library)
+ssl>=1.0.0  # Standard library
+
+# ==========================================
+# Compatibility Notes
+# ==========================================
+
+# Python Version: 3.8 or higher required
+# Operating System: Linux (primary), Windows/macOS (limited support)
+# 
+# For Ubuntu/Debian installation:
+# sudo apt update
+# sudo apt install python3-pip python3-venv python3-tk wmctrl xdotool portaudio19-dev
+# 
+# For development setup:
+# python3 -m venv .venv
+# source .venv/bin/activate
+# pip install -r requirements.txt
+#
+# For UV-based setup (recommended):
+# uv venv
+# uv pip install -r requirements.txt
+
+# ==========================================
+# Security Considerations
+# ==========================================
+
+# When installing in medical environments:
+# 1. Verify all package sources and checksums
+# 2. Use isolated virtual environments
+# 3. Keep dependencies updated for security patches
+# 4. Review Azure SDK privacy and security policies
+# 5. Implement network security appropriate for medical data
+
+# ==========================================
+# Version Pinning Strategy
+# ==========================================
+
+# Core dependencies are pinned to specific versions for stability
+# Testing and development tools use minimum versions for flexibility
+# Standard library components are listed for documentation
+# Optional components are commented to avoid unnecessary installations
+
+# Last updated: 2025-07-07
+# Compatible with: Voice Bridge Pathology v1.0.0
