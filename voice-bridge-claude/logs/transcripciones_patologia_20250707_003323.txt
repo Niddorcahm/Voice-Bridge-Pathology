@@ -1,8 +1,0 @@
-# Transcripciones Voice Bridge - Patología Molecular
-# Sesión: 2025-07-07 00:28:18
-# Total transcripciones: 4
-
-[00:28:56] Cloud observo la biopsia de piel, una hiperqueratosis marcada con células atípicas.
-[00:28:59] En la capa basal.
-[00:29:02] Que muestran empleomorfismo nuclear.
-[00:29:10] Invasión focal de la dermis papilar compatible con carcinoma vasocelular.
