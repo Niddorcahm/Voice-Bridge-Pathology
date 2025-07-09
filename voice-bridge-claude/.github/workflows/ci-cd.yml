@@ -1,0 +1,312 @@
+name: Voice Bridge Pathology CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          python3-tk \
+          portaudio19-dev \
+          xvfb \
+          wmctrl \
+          xdotool
+          
+    - name: Install UV package manager
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        
+    - name: Create virtual environment
+      run: |
+        uv venv
+        source .venv/bin/activate
+        echo "VIRTUAL_ENV=$VIRTUAL_ENV" >> $GITHUB_ENV
+        echo "$VIRTUAL_ENV/bin" >> $GITHUB_PATH
+        
+    - name: Install dependencies
+      run: |
+        uv pip install -r requirements.txt
+        uv pip install pytest pytest-cov black isort flake8 mypy
+        
+    - name: Run linting
+      run: |
+        black --check .
+        isort --check-only .
+        flake8 .
+        
+    - name: Run type checking
+      run: |
+        mypy voice_bridge_app.py --ignore-missing-imports
+        
+    - name: Run tests
+      env:
+        DISPLAY: ':99'
+      run: |
+        # Start virtual display for GUI tests
+        Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        sleep 3
+        # Run tests with coverage
+        pytest tests/ --cov=voice_bridge_app --cov-report=xml --cov-report=term-missing
+        
+    - name: Upload coverage to Codecov
+      if: matrix.python-version == '3.10'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install security scanning tools
+      run: |
+        pip install bandit safety
+        
+    - name: Run Bandit security scan
+      run: |
+        bandit -r voice_bridge_app.py -f json -o bandit-report.json || true
+        bandit -r voice_bridge_app.py
+        
+    - name: Run Safety dependency scan
+      run: |
+        safety check --json --output safety-report.json || true
+        safety check
+        
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
+
+  medical-compliance:
+    name: Medical Compliance Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Check HIPAA compliance documentation
+      run: |
+        echo "Checking HIPAA compliance documentation..."
+        if [ -f "docs/HIPAA_COMPLIANCE.md" ]; then
+          echo "✅ HIPAA compliance documentation found"
+        else
+          echo "⚠️ HIPAA compliance documentation missing"
+        fi
+        
+    - name: Validate medical dictionaries
+      run: |
+        echo "Validating medical dictionaries..."
+        if [ -d "config/diccionarios" ]; then
+          echo "✅ Medical dictionaries directory found"
+          for dict in config/diccionarios/*.txt; do
+            if [ -f "$dict" ]; then
+              lines=$(wc -l < "$dict")
+              echo "  $(basename "$dict"): $lines terms"
+            fi
+          done
+        else
+          echo "⚠️ Medical dictionaries not found"
+        fi
+        
+    - name: Check privacy and security settings
+      run: |
+        echo "Checking privacy and security configurations..."
+        if grep -q "hipaa_compliance.*true" examples/voice_bridge_config_example.ini; then
+          echo "✅ HIPAA compliance enabled in example config"
+        else
+          echo "⚠️ HIPAA compliance not enabled in example config"
+        fi
+
+  documentation:
+    name: Documentation Build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install documentation dependencies
+      run: |
+        pip install sphinx sphinx-rtd-theme myst-parser
+        
+    - name: Build documentation
+      run: |
+        mkdir -p docs
+        # Create basic Sphinx configuration if it doesn't exist
+        if [ ! -f "docs/conf.py" ]; then
+          sphinx-quickstart docs --quiet --project="Voice Bridge Pathology" --author="Voice Bridge Team" --release="1.0.0" --language="en" --extensions="sphinx.ext.autodoc,sphinx.ext.viewcode,myst_parser"
+        fi
+        sphinx-build -b html docs docs/_build/html
+        
+    - name: Upload documentation artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation
+        path: docs/_build/html
+
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        uv venv
+        source .venv/bin/activate
+        uv pip install -r requirements.txt
+        
+    - name: Test Azure Speech SDK integration
+      env:
+        AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY_TEST }}
+        AZURE_SPEECH_REGION: ${{ secrets.AZURE_SPEECH_REGION_TEST }}
+      run: |
+        if [ -n "$AZURE_SPEECH_KEY" ]; then
+          echo "Testing Azure Speech SDK integration..."
+          python -c "
+import azure.cognitiveservices.speech as speechsdk
+import os
+
+key = os.environ.get('AZURE_SPEECH_KEY')
+region = os.environ.get('AZURE_SPEECH_REGION', 'eastus')
+
+if key:
+    config = speechsdk.SpeechConfig(subscription=key, region=region)
+    print('✅ Azure Speech SDK configuration successful')
+else:
+    print('⚠️ Azure credentials not configured for testing')
+"
+        else
+          echo "⚠️ Azure test credentials not available - skipping integration test"
+        fi
+
+  build-and-package:
+    name: Build and Package
+    runs-on: ubuntu-latest
+    needs: [test, security, documentation]
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install build dependencies
+      run: |
+        pip install build twine
+        
+    - name: Build package
+      run: |
+        python -m build
+        
+    - name: Check package
+      run: |
+        twine check dist/*
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist
+        path: dist/
+
+  deploy:
+    name: Deploy Release
+    runs-on: ubuntu-latest
+    needs: [build-and-package]
+    if: github.event_name == 'release' && github.event.action == 'published'
+    environment: production
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: dist
+        path: dist/
+        
+    - name: Publish to PyPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        pip install twine
+        twine upload dist/*
+
+  notify:
+    name: Notification
+    runs-on: ubuntu-latest
+    needs: [test, security, medical-compliance, documentation]
+    if: always()
+    
+    steps:
+    - name: Notify on success
+      if: ${{ needs.test.result == 'success' && needs.security.result == 'success' }}
+      run: |
+        echo "✅ All checks passed successfully!"
+        
+    - name: Notify on failure
+      if: ${{ needs.test.result == 'failure' || needs.security.result == 'failure' }}
+      run: |
+        echo "❌ Some checks failed. Please review the results."
+        exit 1
