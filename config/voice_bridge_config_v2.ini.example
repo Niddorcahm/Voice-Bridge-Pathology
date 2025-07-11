@@ -1,0 +1,75 @@
+[DEFAULT]
+# Azure Speech Services Configuration
+# Get your key from: https://portal.azure.com
+azure_speech_key = YOUR_AZURE_SPEECH_KEY_HERE
+azure_region = eastus
+speech_language = es-CO
+tts_voice = es-CO-SalomeNeural
+
+# Keyboard Shortcuts
+hotkey_start = ctrl+shift+v
+hotkey_stop = ctrl+shift+s
+hotkey_dictation = ctrl+shift+d
+hotkey_emergency = ctrl+shift+x
+
+# Application Behavior
+auto_send_to_claude = false
+claude_window_title = Claude
+medical_mode = true
+confidence_threshold = 0.5
+tts_enabled = true
+claude_activation_delay = 0.5
+
+# Voice Bridge v2.0 Features
+# Dictation mode: continuous or segmented
+dictation_mode = continuous
+
+# Anti-coupling prevents TTS from being transcribed
+anti_coupling = true
+tts_during_dictation = false
+
+# Medical term auto-correction
+auto_correct_medical = true
+
+# Timeout settings (in seconds)
+dictation_timeout_seconds = 8
+timeout_warning_seconds = 3
+timeout_audio_warning = true
+
+# Advanced Settings
+# Platform: linux, windows, macos
+platform = linux
+
+# Logging level: DEBUG, INFO, WARNING, ERROR
+log_level = INFO
+
+# GUI Settings
+window_width = 700
+window_height = 600
+show_buffer_display = true
+show_timeout_progress = true
+
+# Performance Settings
+max_buffer_segments = 50
+repetition_threshold = 0.85
+command_confidence_threshold = 0.7
+
+# Medical Dictionary Settings
+load_medical_terms = true
+medical_terms_priority = high
+
+# Integration Settings
+enable_clipboard_monitoring = false
+auto_save_transcriptions = true
+transcription_format = txt
+
+# Audio Settings
+input_device = default
+audio_sample_rate = 16000
+audio_channels = 1
+
+# Azure Advanced Settings (optional)
+# speech_recognition_mode = DICTATION
+# initial_silence_timeout_ms = 10000
+# end_silence_timeout_ms = 15000
+# segmentation_silence_timeout_ms = 3000
