@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 """
-Voice Bridge v2.2.1 - Sistema Completo de Dictado Médico con Configuración Azure
-===============================================================================
-Versión mejorada con configuración automática de Azure Speech
+Voice Bridge v2.2.3 - Sistema Optimizado de Dictado Médico (CORREGIDO)
+=========================================================================
+Versión optimizada con respuesta rápida y configuración completa - Error de SectionProxy corregido
 """
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox, font, simpledialog
@@ -204,12 +204,325 @@ class AzureConfigDialog:
         return self.result
 
 
+class ConfigWindow:
+    """Ventana completa de configuración - CORREGIDA"""
+
+    def __init__(self, parent, config_dict):
+        self.parent = parent
+        # CORRECCIÓN: Convertir el dict correctamente
+        self.config = dict(config_dict) if config_dict else {}
+        self.window = None
+        self.create_window()
+
+    def create_window(self):
+        """Crear ventana de configuración"""
+        self.window = tk.Toplevel(self.parent)
+        self.window.title("⚙️ Configuración Voice Bridge")
+        self.window.geometry("600x500")
+        self.window.resizable(True, True)
+        self.window.transient(self.parent)
+        self.window.grab_set()
+
+        # Centrar ventana
+        self.window.update_idletasks()
+        x = (self.window.winfo_screenwidth() // 2) - (600 // 2)
+        y = (self.window.winfo_screenheight() // 2) - (500 // 2)
+        self.window.geometry(f"600x500+{x}+{y}")
+
+        self.create_interface()
+
+    def create_interface(self):
+        """Crear interfaz de configuración"""
+        # Frame principal
+        main_frame = tk.Frame(self.window, padx=20, pady=20)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Título
+        title_label = tk.Label(main_frame, text="⚙️ Configuración Voice Bridge v2.2.3",
+                               font=('Arial', 16, 'bold'))
+        title_label.pack(pady=(0, 20))
+
+        # Notebook para pestañas
+        notebook = ttk.Notebook(main_frame)
+        notebook.pack(fill=tk.BOTH, expand=True, pady=(0, 20))
+
+        # Pestañas
+        self.create_azure_tab(notebook)
+        self.create_recognition_tab(notebook)
+        self.create_ui_tab(notebook)
+        self.create_advanced_tab(notebook)
+
+        # Botones
+        buttons_frame = tk.Frame(main_frame)
+        buttons_frame.pack(fill=tk.X)
+
+        save_btn = tk.Button(buttons_frame, text="💾 Guardar y Aplicar",
+                             command=self.save_config, bg="#27ae60", fg="white",
+                             font=('Arial', 11, 'bold'), padx=20, pady=8)
+        save_btn.pack(side=tk.RIGHT, padx=(10, 0))
+
+        cancel_btn = tk.Button(buttons_frame, text="❌ Cancelar",
+                               command=self.window.destroy, bg="#95a5a6", fg="white",
+                               font=('Arial', 11), padx=20, pady=8)
+        cancel_btn.pack(side=tk.RIGHT)
+
+    def create_azure_tab(self, notebook):
+        """Crear pestaña de configuración Azure"""
+        frame = ttk.Frame(notebook)
+        notebook.add(frame, text="🔧 Azure Speech")
+
+        # Scroll frame
+        canvas = tk.Canvas(frame)
+        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Azure Key
+        key_frame = tk.LabelFrame(scrollable_frame, text="Clave de Azure Speech", padx=10, pady=10)
+        key_frame.pack(fill=tk.X, pady=(0, 15))
+
+        tk.Label(key_frame, text="Azure Speech Key:", font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+        self.azure_key_var = tk.StringVar(value=self.config.get('azure_speech_key', ''))
+        self.azure_key_entry = tk.Entry(key_frame, textvariable=self.azure_key_var,
+                                        width=60, show="*", font=('Courier', 10))
+        self.azure_key_entry.pack(fill=tk.X, pady=(5, 0))
+
+        # Azure Region
+        region_frame = tk.LabelFrame(scrollable_frame, text="Región de Azure", padx=10, pady=10)
+        region_frame.pack(fill=tk.X, pady=(0, 15))
+
+        tk.Label(region_frame, text="Región:", font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+        self.region_var = tk.StringVar(value=self.config.get('azure_region', 'eastus'))
+        region_combo = ttk.Combobox(region_frame, textvariable=self.region_var,
+                                    values=['eastus', 'westus', 'eastus2', 'westus2',
+                                            'westeurope', 'northeurope', 'eastasia',
+                                            'southeastasia', 'japaneast', 'australiaeast'])
+        region_combo.pack(fill=tk.X, pady=(5, 0))
+
+        # Idioma
+        lang_frame = tk.LabelFrame(scrollable_frame, text="Configuración de Idioma", padx=10, pady=10)
+        lang_frame.pack(fill=tk.X, pady=(0, 15))
+
+        tk.Label(lang_frame, text="Idioma de reconocimiento:", font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+        self.lang_var = tk.StringVar(value=self.config.get('speech_language', 'es-CO'))
+        lang_combo = ttk.Combobox(lang_frame, textvariable=self.lang_var,
+                                  values=['es-CO', 'es-ES', 'es-MX', 'es-AR', 'en-US', 'en-GB'])
+        lang_combo.pack(fill=tk.X, pady=(5, 10))
+
+        tk.Label(lang_frame, text="Voz TTS:", font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+        self.tts_voice_var = tk.StringVar(value=self.config.get('tts_voice', 'es-CO-SalomeNeural'))
+        tts_combo = ttk.Combobox(lang_frame, textvariable=self.tts_voice_var,
+                                 values=['es-CO-SalomeNeural', 'es-CO-GonzaloNeural',
+                                         'es-ES-ElviraNeural', 'es-MX-DaliaNeural'])
+        tts_combo.pack(fill=tk.X, pady=(5, 0))
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+    def create_recognition_tab(self, notebook):
+        """Crear pestaña de configuración de reconocimiento"""
+        frame = ttk.Frame(notebook)
+        notebook.add(frame, text="🎤 Reconocimiento")
+
+        # Frame principal
+        main_frame = tk.Frame(frame, padx=20, pady=20)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Velocidad de respuesta
+        speed_frame = tk.LabelFrame(main_frame, text="⚡ Velocidad de Respuesta", padx=10, pady=10)
+        speed_frame.pack(fill=tk.X, pady=(0, 15))
+
+        tk.Label(speed_frame, text="Tiempo de pausa para procesar (segundos):",
+                 font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+
+        pause_frame = tk.Frame(speed_frame)
+        pause_frame.pack(fill=tk.X, pady=(5, 10))
+
+        self.pause_var = tk.DoubleVar(value=float(self.config.get('medical_pause_seconds', '2.0')))
+        pause_scale = tk.Scale(pause_frame, from_=1.0, to=10.0, resolution=0.5,
+                               variable=self.pause_var, orient=tk.HORIZONTAL,
+                               font=('Arial', 10))
+        pause_scale.pack(fill=tk.X)
+
+        self.pause_label = tk.Label(pause_frame,
+                                    text=f"Pausa actual: {self.pause_var.get()}s (Menor = Más rápido)",
+                                    font=('Arial', 9), fg="blue")
+        self.pause_label.pack(pady=(5, 0))
+
+        def update_pause_label(val):
+            self.pause_label.config(text=f"Pausa actual: {float(val)}s (Menor = Más rápido)")
+
+        pause_scale.config(command=update_pause_label)
+
+        # Azure Timeouts (OPTIMIZADOS)
+        timeout_frame = tk.LabelFrame(main_frame, text="🚀 Configuración Optimizada Azure", padx=10, pady=10)
+        timeout_frame.pack(fill=tk.X, pady=(0, 15))
+
+        # Silencio inicial (reducido para respuesta rápida)
+        tk.Label(timeout_frame, text="Silencio inicial (ms):", font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+        self.initial_silence_var = tk.IntVar(value=int(self.config.get('azure_initial_silence_ms', '3000')))
+        initial_scale = tk.Scale(timeout_frame, from_=1000, to=10000, resolution=500,
+                                 variable=self.initial_silence_var, orient=tk.HORIZONTAL)
+        initial_scale.pack(fill=tk.X, pady=(5, 10))
+
+        # Silencio final (reducido para respuesta rápida)
+        tk.Label(timeout_frame, text="Silencio final (ms):", font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+        self.end_silence_var = tk.IntVar(value=int(self.config.get('azure_end_silence_ms', '2000')))
+        end_scale = tk.Scale(timeout_frame, from_=500, to=8000, resolution=500,
+                             variable=self.end_silence_var, orient=tk.HORIZONTAL)
+        end_scale.pack(fill=tk.X, pady=(5, 10))
+
+        # Segmentación (reducido para respuesta rápida)
+        tk.Label(timeout_frame, text="Segmentación (ms):", font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+        self.segmentation_var = tk.IntVar(value=int(self.config.get('azure_segmentation_ms', '3000')))
+        seg_scale = tk.Scale(timeout_frame, from_=1000, to=8000, resolution=500,
+                             variable=self.segmentation_var, orient=tk.HORIZONTAL)
+        seg_scale.pack(fill=tk.X, pady=(5, 10))
+
+        # Botón de configuración rápida
+        quick_btn = tk.Button(timeout_frame, text="⚡ Configuración Rápida (Recomendado)",
+                              command=self.apply_fast_config, bg="#e74c3c", fg="white",
+                              font=('Arial', 10, 'bold'), padx=10, pady=5)
+        quick_btn.pack(pady=10)
+
+        # Funciones médicas
+        medical_frame = tk.LabelFrame(main_frame, text="🏥 Funciones Médicas", padx=10, pady=10)
+        medical_frame.pack(fill=tk.X, pady=(0, 15))
+
+        self.auto_correct_var = tk.BooleanVar(value=self.config.get('auto_correct_medical', 'true').lower() == 'true')
+        tk.Checkbutton(medical_frame, text="Corrección automática de términos médicos",
+                       variable=self.auto_correct_var, font=('Arial', 10)).pack(anchor=tk.W, pady=2)
+
+        self.tts_enabled_var = tk.BooleanVar(value=self.config.get('tts_enabled', 'true').lower() == 'true')
+        tk.Checkbutton(medical_frame, text="Text-to-Speech habilitado",
+                       variable=self.tts_enabled_var, font=('Arial', 10)).pack(anchor=tk.W, pady=2)
+
+    def create_ui_tab(self, notebook):
+        """Crear pestaña de configuración de UI"""
+        frame = ttk.Frame(notebook)
+        notebook.add(frame, text="🎨 Interfaz")
+
+        main_frame = tk.Frame(frame, padx=20, pady=20)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Tema
+        theme_frame = tk.LabelFrame(main_frame, text="🎨 Tema de Interfaz", padx=10, pady=10)
+        theme_frame.pack(fill=tk.X, pady=(0, 15))
+
+        tk.Label(theme_frame, text="Tema:", font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+        self.theme_var = tk.StringVar(value=self.config.get('ui_theme', 'light'))
+        theme_combo = ttk.Combobox(theme_frame, textvariable=self.theme_var,
+                                   values=['light', 'dark'])
+        theme_combo.pack(fill=tk.X, pady=(5, 10))
+
+        # Idioma de interfaz
+        tk.Label(theme_frame, text="Idioma de interfaz:", font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+        self.ui_lang_var = tk.StringVar(value=self.config.get('ui_language', 'es'))
+        ui_lang_combo = ttk.Combobox(theme_frame, textvariable=self.ui_lang_var,
+                                     values=['es', 'en'])
+        ui_lang_combo.pack(fill=tk.X, pady=(5, 0))
+
+    def create_advanced_tab(self, notebook):
+        """Crear pestaña de configuración avanzada"""
+        frame = ttk.Frame(notebook)
+        notebook.add(frame, text="🔬 Avanzado")
+
+        main_frame = tk.Frame(frame, padx=20, pady=20)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Detección de repeticiones
+        rep_frame = tk.LabelFrame(main_frame, text="🔄 Detección de Repeticiones", padx=10, pady=10)
+        rep_frame.pack(fill=tk.X, pady=(0, 15))
+
+        tk.Label(rep_frame, text="Umbral de similitud:", font=('Arial', 10, 'bold')).pack(anchor=tk.W)
+        self.similarity_var = tk.DoubleVar(value=float(self.config.get('similarity_threshold', '0.85')))
+        similarity_scale = tk.Scale(rep_frame, from_=0.5, to=1.0, resolution=0.05,
+                                    variable=self.similarity_var, orient=tk.HORIZONTAL)
+        similarity_scale.pack(fill=tk.X, pady=(5, 0))
+
+        # Estadísticas
+        stats_frame = tk.LabelFrame(main_frame, text="📊 Estadísticas", padx=10, pady=10)
+        stats_frame.pack(fill=tk.X, pady=(0, 15))
+
+        self.show_stats_var = tk.BooleanVar(value=self.config.get('show_performance_stats', 'true').lower() == 'true')
+        tk.Checkbutton(stats_frame, text="Mostrar estadísticas de rendimiento",
+                       variable=self.show_stats_var, font=('Arial', 10)).pack(anchor=tk.W, pady=2)
+
+        self.show_corrections_var = tk.BooleanVar(
+            value=self.config.get('show_correction_details', 'true').lower() == 'true')
+        tk.Checkbutton(stats_frame, text="Mostrar detalles de correcciones",
+                       variable=self.show_corrections_var, font=('Arial', 10)).pack(anchor=tk.W, pady=2)
+
+    def apply_fast_config(self):
+        """Aplicar configuración rápida optimizada"""
+        # Configuración para respuesta ultra-rápida
+        self.pause_var.set(1.5)  # Pausa muy corta
+        self.initial_silence_var.set(2000)  # 2 segundos inicial
+        self.end_silence_var.set(1500)  # 1.5 segundos final
+        self.segmentation_var.set(2500)  # 2.5 segundos segmentación
+
+        messagebox.showinfo("✅ Configuración Aplicada",
+                            "Configuración optimizada para respuesta rápida aplicada!\n\n" +
+                            "• Pausa de procesamiento: 1.5s\n" +
+                            "• Silencio inicial: 2s\n" +
+                            "• Silencio final: 1.5s\n" +
+                            "• Segmentación: 2.5s")
+
+    def save_config(self):
+        """Guardar configuración"""
+        try:
+            # Actualizar configuración
+            self.config.update({
+                'azure_speech_key': self.azure_key_var.get(),
+                'azure_region': self.region_var.get(),
+                'speech_language': self.lang_var.get(),
+                'tts_voice': self.tts_voice_var.get(),
+                'medical_pause_seconds': str(self.pause_var.get()),
+                'azure_initial_silence_ms': str(self.initial_silence_var.get()),
+                'azure_end_silence_ms': str(self.end_silence_var.get()),
+                'azure_segmentation_ms': str(self.segmentation_var.get()),
+                'auto_correct_medical': str(self.auto_correct_var.get()).lower(),
+                'tts_enabled': str(self.tts_enabled_var.get()).lower(),
+                'ui_theme': self.theme_var.get(),
+                'ui_language': self.ui_lang_var.get(),
+                'similarity_threshold': str(self.similarity_var.get()),
+                'show_performance_stats': str(self.show_stats_var.get()).lower(),
+                'show_correction_details': str(self.show_corrections_var.get()).lower()
+            })
+
+            # Guardar en archivo
+            config_file = Path.home() / "voice-bridge-claude" / "config" / "voice_bridge_config.ini"
+            config_file.parent.mkdir(parents=True, exist_ok=True)
+
+            config_parser = configparser.ConfigParser()
+            config_parser['DEFAULT'] = self.config
+
+            with open(config_file, 'w') as f:
+                config_parser.write(f)
+
+            messagebox.showinfo("✅ Configuración Guardada",
+                                "Configuración guardada correctamente.\n" +
+                                "Reinicia el reconocimiento para aplicar cambios.")
+
+            self.window.destroy()
+
+        except Exception as e:
+            messagebox.showerror("❌ Error", f"Error guardando configuración:\n{e}")
+
+
 class ThemeSystem:
-    """Sistema de temas mejorado para UI médica"""
+    """Sistema de temas mejorado"""
 
     def __init__(self):
         self.current_theme = 'light'
-        self.current_language = 'en'
+        self.current_language = 'es'
         self.detect_fonts()
 
     def detect_fonts(self):
@@ -220,7 +533,6 @@ class ThemeSystem:
             available = set(font.families())
             root_temp.destroy()
 
-            # Jerarquía de fuentes preferidas
             font_preferences = ['Segoe UI', 'San Francisco', 'Ubuntu', 'DejaVu Sans', 'Arial']
             mono_preferences = ['Consolas', 'Monaco', 'Ubuntu Mono', 'DejaVu Sans Mono', 'Courier New']
 
@@ -283,7 +595,7 @@ class ThemeSystem:
         """Obtener textos según idioma"""
         texts = {
             'en': {
-                'title': 'Voice Bridge v2.2.1',
+                'title': 'Voice Bridge v2.2.3',
                 'start': 'Start',
                 'stop': 'Stop',
                 'status': 'Status',
@@ -298,7 +610,7 @@ class ThemeSystem:
                 'stats': 'Session Statistics'
             },
             'es': {
-                'title': 'Voice Bridge v2.2.1',
+                'title': 'Voice Bridge v2.2.3',
                 'start': 'Iniciar',
                 'stop': 'Detener',
                 'status': 'Estado',
@@ -315,8 +627,6 @@ class ThemeSystem:
         }
         return texts[self.current_language]
 
-
-# ... (resto de las clases MedicalCorrector, RepetitionDetector, StatsCollector igual que antes)
 
 class MedicalCorrector:
     """Sistema de corrección médica contextual"""
@@ -406,9 +716,9 @@ class StatsCollector:
 
 class VoiceBridge220:
     def __init__(self):
-        """Inicializar Voice Bridge v2.2.1"""
+        """Inicializar Voice Bridge v2.2.3 Optimizado"""
         self.setup_logging()
-        self.logger.info("=== Voice Bridge v2.2.1 Iniciando ===")
+        self.logger.info("=== Voice Bridge v2.2.3 CORREGIDO Iniciando ===")
 
         # Sistemas principales
         self.theme_system = ThemeSystem()
@@ -437,14 +747,15 @@ class VoiceBridge220:
         self.last_activity_time = None
         self.buffer_timer = None
 
-        # Timeouts configurables
+        # Timeouts configurables OPTIMIZADOS
         try:
-            self.medical_pause_seconds = float(self.config.get('medical_pause_seconds', '6'))
+            # Pausa de procesamiento optimizada (por defecto 2 segundos para respuesta rápida)
+            self.medical_pause_seconds = float(self.config.get('medical_pause_seconds', '2.0'))
             if self.medical_pause_seconds <= 0:
-                self.medical_pause_seconds = 6.0
+                self.medical_pause_seconds = 2.0
         except (ValueError, TypeError):
-            self.logger.warning("Valor inválido para medical_pause_seconds, usando default")
-            self.medical_pause_seconds = 6.0
+            self.logger.warning("Valor inválido para medical_pause_seconds, usando default optimizado")
+            self.medical_pause_seconds = 2.0
 
         # Azure objects
         self.speech_config = None
@@ -459,7 +770,7 @@ class VoiceBridge220:
         self.setup_gui()
 
         # Configurar Azure en thread separado
-        self.log_to_gui("⏳ Configurando Azure Speech...")
+        self.log_to_gui("⏳ Configurando Azure Speech (Modo Optimizado)...")
         threading.Thread(target=self.delayed_azure_setup, daemon=True).start()
 
         self.load_medical_terms()
@@ -469,7 +780,7 @@ class VoiceBridge220:
         self.session_start = datetime.now()
         self.transcription_count = 0
 
-        self.logger.info("✅ Voice Bridge v2.2.1 iniciado correctamente")
+        self.logger.info("✅ Voice Bridge v2.2.3 CORREGIDO iniciado correctamente (Modo Optimizado)")
 
         # Iniciar loops
         self.start_update_loops()
@@ -513,14 +824,12 @@ class VoiceBridge220:
             print(f"Error configurando Azure: {e}")
             return False
 
-    # ... (resto de métodos igual que en la versión anterior, con las mejoras aplicadas)
-
     def setup_logging(self):
         """Configurar sistema de logging"""
         log_dir = Path.home() / "voice-bridge-claude" / "logs"
         log_dir.mkdir(parents=True, exist_ok=True)
 
-        log_file = log_dir / f"voice_bridge_v221_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        log_file = log_dir / f"voice_bridge_v223_fixed_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
         logging.basicConfig(
             level=logging.INFO,
@@ -533,39 +842,32 @@ class VoiceBridge220:
         self.logger = logging.getLogger(__name__)
 
     def load_config(self):
-        """Cargar configuración"""
+        """Cargar configuración con valores optimizados que funcionan"""
         config = configparser.ConfigParser()
+
+        # Valores por defecto basados en versiones que funcionan
         default_config = {
-            # Azure
-            'azure_speech_key': os.environ.get('AZURE_SPEECH_KEY', ''),
+            'azure_key': os.environ.get('AZURE_SPEECH_KEY', ''),
             'azure_region': os.environ.get('AZURE_SPEECH_REGION', 'eastus'),
-            'speech_language': 'es-CO',
+            'language': 'es-CO',  # o 'es-ES'
             'tts_voice': 'es-CO-SalomeNeural',
-            # Funcionalidad
-            'auto_send_to_claude': 'false',
+            'medical_pause_seconds': '4',
+
+            # Timeouts Azure que funcionan en versiones anteriores
+            'azure_initial_silence_ms': '10000',  # 10 segundos para empezar
+            'azure_end_silence_ms': '8000',  # 8 segundos para finalizar
+            'azure_segmentation_ms': '4000',  # 4 segundos entre palabras
+
+            # Configuraciones adicionales
             'tts_enabled': 'true',
             'auto_correct_medical': 'true',
-            'medical_pause_seconds': '6',
-            'microphone_type': 'ambient',
-            # Timeouts Azure
-            'azure_initial_silence_ms': '10000',
-            'azure_end_silence_ms': '10000',
-            'azure_segmentation_ms': '6000',
-            # UI
-            'ui_theme': 'light',
-            'ui_language': 'en',
-            # Avanzado
-            'similarity_threshold': '0.85',
-            'show_correction_details': 'true',
-            'show_performance_stats': 'true',
-            'claude_activation_delay': '0.5'
+            'microphone_type': 'ambient'
         }
 
         config_file = Path.home() / "voice-bridge-claude" / "config" / "voice_bridge_config.ini"
-
         if config_file.exists():
             config.read(config_file)
-            # Actualizar con nuevos valores si no existen
+            # Asegurar que todos los valores por defecto estén presentes
             for key, value in default_config.items():
                 if key not in config['DEFAULT']:
                     config['DEFAULT'][key] = value
@@ -580,7 +882,7 @@ class VoiceBridge220:
     def load_ui_preferences(self):
         """Cargar preferencias de UI"""
         self.theme_system.current_theme = self.config.get('ui_theme', 'light')
-        self.theme_system.current_language = self.config.get('ui_language', 'en')
+        self.theme_system.current_language = self.config.get('ui_language', 'es')
 
     def setup_gui(self):
         """Configurar interfaz gráfica mejorada"""
@@ -620,9 +922,9 @@ class VoiceBridge220:
         main_frame = tk.Frame(self.root, bg=colors['bg_main'])
         main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
 
-        # Título
+        # Título con indicador de velocidad
         title_label = tk.Label(main_frame,
-                               text=texts['title'],
+                               text=texts['title'] + " ⚡ MODO RÁPIDO (CORREGIDO)",
                                font=fonts['title'],
                                bg=colors['bg_main'],
                                fg=colors['text_primary'])
@@ -680,7 +982,7 @@ class VoiceBridge220:
                                  command=self.clear_transcription)
         clear_button.pack(side=tk.LEFT, padx=5)
 
-        # Estado
+        # Estado con indicador de pausa actual
         status_frame = tk.Frame(control_frame, bg=colors['bg_surface'])
         status_frame.pack(pady=(0, 10))
 
@@ -697,6 +999,14 @@ class VoiceBridge220:
                                      bg=colors['bg_surface'],
                                      fg=colors['danger'] if not self.check_azure_config() else colors['text_secondary'])
         self.status_label.pack(side=tk.LEFT)
+
+        # Indicador de pausa
+        pause_info = tk.Label(status_frame,
+                              text=f"⚡ Pausa: {self.medical_pause_seconds}s",
+                              font=fonts['caption'],
+                              bg=colors['bg_surface'],
+                              fg=colors['primary'])
+        pause_info.pack(side=tk.RIGHT, padx=(10, 0))
 
         # Área de transcripción
         transcription_frame = tk.LabelFrame(main_frame,
@@ -785,95 +1095,402 @@ class VoiceBridge220:
         try:
             time.sleep(0.5)
             self.setup_azure()
+
+            if self.azure_ready:
+                self.optimize_pipewire_for_dictation()
+
         except Exception as e:
             self.logger.error(f"Error en configuración diferida de Azure: {e}")
             self.log_to_gui(f"❌ Error configurando Azure: {e}")
 
     def setup_azure(self):
-        """Configurar Azure Speech Services mejorado"""
+        """Configurar Azure Speech con modo DICTATION (compatible con PipeWire)"""
         try:
-            # Obtener credenciales (primero config, luego variables de entorno)
-            azure_key = self.config.get('azure_speech_key', '').strip()
-            azure_region = self.config.get('azure_region', '').strip()
+            if not self.config.get('azure_key') or not self.config.get('azure_region'):
+                self.log_to_gui("❌ Azure key o región no configurados")
+                return False
 
-            if not azure_key:
-                azure_key = os.environ.get('AZURE_SPEECH_KEY', '').strip()
-            if not azure_region:
-                azure_region = os.environ.get('AZURE_SPEECH_REGION', 'eastus').strip()
+            # Limpiar reconocedor existente (igual que en versiones que funcionan)
+            try:
+                if hasattr(self, 'speech_recognizer') and self.speech_recognizer:
+                    self.speech_recognizer.stop_continuous_recognition_async().wait()
+                    del self.speech_recognizer
+                import gc
+                gc.collect()
+                import time
+                time.sleep(0.3)
+            except Exception as e:
+                self.log_to_gui(f"⚠ Limpieza Azure: {e}")
 
-            if not azure_key:
-                raise ValueError("Azure Speech Key no configurada")
-
-            # Configuración de Azure Speech
+            # Configurar Speech SDK
             self.speech_config = speechsdk.SpeechConfig(
-                subscription=azure_key,
-                region=azure_region
+                subscription=self.config['azure_key'],
+                region=self.config['azure_region']
             )
 
-            # Configurar idioma
-            speech_language = self.config.get('speech_language', 'es-CO')
-            self.speech_config.speech_recognition_language = speech_language
-
-            # Configurar para TTS
+            # Configurar idioma y voz
+            language = self.config.get('language', 'es-CO')
+            self.speech_config.speech_recognition_language = language
             tts_voice = self.config.get('tts_voice', 'es-CO-SalomeNeural')
             self.speech_config.speech_synthesis_voice_name = tts_voice
 
-            # Configurar audio
+            # 🔧 CONFIGURACIÓN CRÍTICA: Usar modo DICTATION (compatible con PipeWire)
+            self.speech_config.set_property(
+                speechsdk.PropertyId.SpeechServiceConnection_RecoMode,
+                "DICTATION"
+            )
+
+            # TIMEOUTS OPTIMIZADOS PARA DICTADO MÉDICO (basado en versiones v21/v201/v203)
+            # Tiempo para empezar a hablar - más generoso para dictado médico
+            initial_silence = self.config.get('azure_initial_silence_ms', '30000')  # 30 segundos
+            self.speech_config.set_property(
+                speechsdk.PropertyId.SpeechServiceConnection_InitialSilenceTimeoutMs,
+                initial_silence
+            )
+
+            # Tiempo de finalización - más largo para dictado médico
+            end_silence = self.config.get('azure_end_silence_ms', '20000')  # 20 segundos
+            self.speech_config.set_property(
+                speechsdk.PropertyId.SpeechServiceConnection_EndSilenceTimeoutMs,
+                end_silence
+            )
+
+            # Tiempo entre palabras - optimizado para dictado continuo
+            segmentation_silence = self.config.get('azure_segmentation_ms', '3000')  # 3 segundos
+            self.speech_config.set_property(
+                speechsdk.PropertyId.Speech_SegmentationSilenceTimeoutMs,
+                segmentation_silence
+            )
+
+            # Configuraciones adicionales que funcionan en las versiones anteriores
+            try:
+                # Mejorar reconocimiento continuo
+                self.speech_config.set_property(
+                    speechsdk.PropertyId.SpeechServiceConnection_LanguageIdMode,
+                    "Continuous"
+                )
+
+                # Configuración de estabilidad para resultados parciales
+                self.speech_config.set_property(
+                    speechsdk.PropertyId.SpeechServiceResponse_StablePartialResultThreshold,
+                    "3"
+                )
+
+                # Optimización para tipo de micrófono
+                mic_type = self.config.get('microphone_type', 'ambient')
+                if mic_type in ['headset', 'directional']:
+                    # Menor supresión de ruido para headsets/direccionales
+                    self.speech_config.set_property(
+                        speechsdk.PropertyId.SpeechServiceConnection_EndpointId,
+                        "LowNoiseSuppression"
+                    )
+
+            except AttributeError:
+                # Si no están disponibles las propiedades avanzadas, continuar
+                self.log_to_gui("ℹ Usando configuración básica de Azure")
+
+            # Configurar audio (igual que en versiones que funcionan)
             self.audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
 
-            # Crear reconocedor
+            # Crear reconocedor con la configuración que funciona
             self.speech_recognizer = speechsdk.SpeechRecognizer(
                 speech_config=self.speech_config,
                 audio_config=self.audio_config
             )
 
-            # Crear sintetizador
+            # Crear sintetizador para TTS
             self.speech_synthesizer = speechsdk.SpeechSynthesizer(
                 speech_config=self.speech_config
             )
 
-            # Configurar callbacks
+            # Configurar callbacks (igual que en versiones que funcionan)
             self.setup_speech_callbacks()
 
             self.azure_ready = True
-            self.log_to_gui("✅ Azure Speech configurado correctamente")
-            self.logger.info("Azure Speech Services configurado correctamente")
+            self.log_to_gui(f"✅ Azure configurado - Modo DICTATION (PipeWire compatible)")
+            self.log_to_gui(f"🗣 Idioma: {language} | Voz: {tts_voice}")
+            self.log_to_gui(
+                f"⏱ Timeouts: inicial={initial_silence}ms, fin={end_silence}ms, segmentación={segmentation_silence}ms")
 
-            # Actualizar UI
-            texts = self.theme_system.get_texts()
-            colors = self.theme_system.get_theme()
-            self.status_label.configure(text=texts['ready'], fg=colors['text_secondary'])
+            return True
 
         except Exception as e:
+            self.log_to_gui(f"❌ Error configurando Azure: {str(e)}")
             self.azure_ready = False
-            error_msg = f"❌ Error configurando Azure: {str(e)}"
-            self.log_to_gui(error_msg)
-            self.logger.error(f"Error configurando Azure Speech: {e}")
+            return False
 
-            # Actualizar UI
-            texts = self.theme_system.get_texts()
-            colors = self.theme_system.get_theme()
-            self.status_label.configure(text=texts['not_configured'], fg=colors['danger'])
+    def optimize_pipewire_for_dictation(self):
+        """Optimizar PipeWire para dictado médico continuo"""
+        try:
+            import subprocess
+            import os
+
+            # Verificar si PipeWire está activo
+            result = subprocess.run(['pgrep', 'pipewire'], capture_output=True)
+            if result.returncode != 0:
+                self.log_to_gui("ℹ PipeWire no detectado - usando configuración estándar")
+                return
+
+            self.log_to_gui("🔧 Optimizando PipeWire para dictado médico...")
+
+            # Crear directorio de configuración si no existe
+            config_dir = os.path.expanduser("~/.config/pipewire/pipewire.conf.d")
+            os.makedirs(config_dir, exist_ok=True)
+
+            # Configuración optimizada para dictado médico
+            config_content = """
+    # Configuración optimizada para dictado médico continuo
+    context.properties = {
+        default.clock.min-quantum = 512
+        default.clock.max-quantum = 2048
+        default.clock.quantum-limit = 8192
+    }
+
+    context.modules = [
+        { name = libpipewire-module-rt
+            args = {
+                nice.level = -11
+                rt.prio = 88
+                rt.time.soft = 200000
+                rt.time.hard = 200000
+            }
+        }
+    ]
+
+    stream.properties = {
+        node.suspend-on-idle = false
+        session.suspend-timeout-seconds = 0
+        resample.quality = 4
+        channelmix.normalize = false
+        channelmix.mix-lfe = true
+    }
+    """
+
+            config_file = os.path.join(config_dir, "99-medical-dictation.conf")
+
+            # Solo escribir si no existe o es diferente
+            write_config = True
+            if os.path.exists(config_file):
+                with open(config_file, 'r') as f:
+                    existing_content = f.read()
+                    if existing_content.strip() == config_content.strip():
+                        write_config = False
+
+            if write_config:
+                with open(config_file, 'w') as f:
+                    f.write(config_content)
+
+                self.log_to_gui("✅ Configuración PipeWire para dictado médico aplicada")
+
+                # Recargar configuración si es posible
+                try:
+                    subprocess.run(['systemctl', '--user', 'reload', 'pipewire'],
+                                   capture_output=True, timeout=5)
+                    self.log_to_gui("🔄 PipeWire recargado con nueva configuración")
+                except (subprocess.TimeoutExpired, FileNotFoundError):
+                    self.log_to_gui("ℹ Reinicia la aplicación para aplicar cambios de PipeWire")
+
+        except Exception as e:
+            self.log_to_gui(f"⚠ No se pudo optimizar PipeWire: {e}")
 
     def setup_speech_callbacks(self):
-        """Configurar callbacks de Azure Speech"""
+        """Configurar callbacks de Azure Speech (basado en versiones que funcionan)"""
+        if not self.speech_recognizer:
+            return
+
+        def on_recognizing(evt):
+            """Callback para reconocimiento parcial (igual que en versiones que funcionan)"""
+            if evt.result.text and len(evt.result.text.strip()) > 0:
+                # Actualizar estado de actividad
+                self.last_activity_time = datetime.now()
+
+                # Log del reconocimiento parcial
+                partial_text = evt.result.text.strip()
+                self.log_to_gui(f"🎯 Reconociendo: {partial_text}")
+
+                # Actualizar buffer médico si es necesario
+                if hasattr(self, 'medical_buffer'):
+                    # Reset del timer de buffer médico
+                    if self.buffer_timer:
+                        self.root.after_cancel(self.buffer_timer)
+
+                    # Programar procesamiento del buffer
+                    self.buffer_timer = self.root.after(
+                        int(self.medical_pause_seconds * 1000),
+                        self.process_medical_buffer
+                    )
+
+        def on_recognized(evt):
+            """Callback para reconocimiento final (igual que en versiones que funcionan)"""
+            if evt.result.text and len(evt.result.text.strip()) > 0:
+                final_text = evt.result.text.strip()
+                self.log_to_gui(f"✅ Reconocido: {final_text}")
+
+                # Agregar al buffer médico (igual que en versiones anteriores)
+                if hasattr(self, 'medical_buffer'):
+                    self.medical_buffer.append(final_text)
+                    self.last_activity_time = datetime.now()
+
+                    # Cancelar timer anterior y programar nuevo
+                    if self.buffer_timer:
+                        self.root.after_cancel(self.buffer_timer)
+
+                    self.buffer_timer = self.root.after(
+                        int(self.medical_pause_seconds * 1000),
+                        self.process_medical_buffer
+                    )
+                else:
+                    # Agregar directamente a transcripción si no hay buffer
+                    self.add_to_transcription(final_text)
+
+        def on_session_started(evt):
+            """Callback cuando inicia la sesión de reconocimiento"""
+            self.log_to_gui("🔵 Sesión de reconocimiento iniciada")
+
+        def on_session_stopped(evt):
+            """Callback cuando termina la sesión de reconocimiento"""
+            self.log_to_gui("🔴 Sesión de reconocimiento detenida")
+
+        def on_canceled(evt):
+            """Callback para manejar errores y cancelaciones"""
+            if evt.cancellation_details.reason == speechsdk.CancellationReason.Error:
+                error_details = evt.cancellation_details.error_details
+                self.log_to_gui(f"❌ Error de reconocimiento: {error_details}")
+
+                # Manejo de errores específicos (igual que en versiones que funcionan)
+                if "authentication" in error_details.lower():
+                    self.log_to_gui("🔑 Error de autenticación - verificar Azure key")
+                elif "network" in error_details.lower():
+                    self.log_to_gui("🌐 Error de red - verificar conexión")
+                elif "microphone" in error_details.lower() or "audio" in error_details.lower():
+                    self.log_to_gui("🎤 Error de micrófono - verificar permisos de audio")
+
+                # Intentar reconectar automáticamente después de 2 segundos
+                self.root.after(2000, self._attempt_azure_reconnection)
+
+            else:
+                self.log_to_gui("ℹ Reconocimiento cancelado")
+
+        # Asignar todos los callbacks
+        self.speech_recognizer.recognizing.connect(on_recognizing)
+        self.speech_recognizer.recognized.connect(on_recognized)
+        self.speech_recognizer.session_started.connect(on_session_started)
+        self.speech_recognizer.session_stopped.connect(on_session_stopped)
+        self.speech_recognizer.canceled.connect(on_canceled)
+
+        self.log_to_gui("✅ Callbacks de Azure configurados")
+
+    def _attempt_azure_reconnection(self):
+        """Intentar reconectar Azure automáticamente (igual que en versiones que funcionan)"""
+        if not self.is_listening:
+            return
+
+        self.log_to_gui("🔄 Intentando reconectar Azure Speech...")
+
+        # Detener reconocimiento actual
+        self.stop_recognition()
+
+        # Esperar un momento y reconectar
+        self.root.after(1000, self._do_azure_reconnection)
+
+    def _do_azure_reconnection(self):
+        """Realizar la reconexión de Azure"""
+        try:
+            # Reconfigurar Azure completamente
+            if self.setup_azure():
+                # Reiniciar reconocimiento si estaba activo
+                if self.is_listening:
+                    self.start_recognition()
+                    self.log_to_gui("✅ Reconexión de Azure exitosa")
+                else:
+                    self.log_to_gui("✅ Azure reconectado - listo para usar")
+            else:
+                self.log_to_gui("❌ Falló la reconexión de Azure")
+        except Exception as e:
+            self.log_to_gui(f"❌ Error en reconexión de Azure: {e}")
+
+    def start_recognition(self):
+        """Iniciar reconocimiento (igual que en versiones que funcionan)"""
+        try:
+            if not self.azure_ready:
+                self.log_to_gui("❌ Azure no está configurado correctamente")
+                return False
+
+            if not self.speech_recognizer:
+                self.log_to_gui("❌ Reconocedor de Azure no está disponible")
+                return False
+
+            # Iniciar reconocimiento continuo (igual que en versiones anteriores)
+            self.speech_recognizer.start_continuous_recognition_async().wait()
+            self.is_listening = True
+
+            # Reset de variables de estado
+            self.last_activity_time = datetime.now()
+            if hasattr(self, 'medical_buffer'):
+                self.medical_buffer.clear()
+
+            self.log_to_gui("🎤 Reconocimiento de voz iniciado - ¡Habla ahora!")
+
+            # Actualizar interfaz
+            self.update_ui_state()
+
+            return True
+
+        except Exception as e:
+            self.log_to_gui(f"❌ Error iniciando reconocimiento: {str(e)}")
+            self.is_listening = False
+            self.update_ui_state()
+            return False
+
+    def stop_recognition(self):
+        """Detener reconocimiento (igual que en versiones que funcionan)"""
+        try:
+            if self.speech_recognizer and self.is_listening:
+                self.speech_recognizer.stop_continuous_recognition_async().wait()
+
+            self.is_listening = False
+
+            # Procesar buffer restante si existe
+            if hasattr(self, 'medical_buffer') and self.medical_buffer:
+                self.process_medical_buffer()
+
+            # Cancelar timers
+            if hasattr(self, 'buffer_timer') and self.buffer_timer:
+                self.root.after_cancel(self.buffer_timer)
+                self.buffer_timer = None
+
+            self.log_to_gui("🔴 Reconocimiento de voz detenido")
+
+            # Actualizar interfaz
+            self.update_ui_state()
+
+        except Exception as e:
+            self.log_to_gui(f"⚠ Error deteniendo reconocimiento: {str(e)}")
+            self.is_listening = False
+            self.update_ui_state()
+
+    def setup_speech_callbacks(self):
+        """Configurar callbacks de Azure Speech optimizados"""
         if not self.speech_recognizer:
             return
 
         try:
-            # Resultado final
-            self.speech_recognizer.recognized.connect(
-                lambda evt: self.transcription_queue.put(('final', evt.result.text))
-            )
+            # Resultado final - procesamiento inmediato
+            def on_recognized(evt):
+                if evt.result.text.strip():
+                    self.transcription_queue.put(('final', evt.result.text))
 
-            # Resultado parcial
-            self.speech_recognizer.recognizing.connect(
-                lambda evt: self.transcription_queue.put(('partial', evt.result.text))
-            )
+            # Resultado parcial - para feedback visual inmediato
+            def on_recognizing(evt):
+                if evt.result.text.strip():
+                    self.transcription_queue.put(('partial', evt.result.text))
+
+            self.speech_recognizer.recognized.connect(on_recognized)
+            self.speech_recognizer.recognizing.connect(on_recognizing)
 
             # Eventos de sesión
             self.speech_recognizer.session_started.connect(
-                lambda evt: self.log_to_gui("🎤 Sesión iniciada")
+                lambda evt: self.log_to_gui("🎤 Sesión iniciada - MODO RÁPIDO")
             )
 
             self.speech_recognizer.session_stopped.connect(
@@ -894,8 +1511,6 @@ class VoiceBridge220:
             error_msg = f"❌ Error de reconocimiento: {evt.error_details}"
             self.log_to_gui(error_msg)
             self.logger.error(error_msg)
-
-    # ... (resto de métodos permanecen igual que en la versión anterior)
 
     def toggle_recognition(self):
         """Alternar reconocimiento de voz"""
@@ -918,7 +1533,7 @@ class VoiceBridge220:
             self.start_recognition()
 
     def start_recognition(self):
-        """Iniciar reconocimiento de voz"""
+        """Iniciar reconocimiento de voz optimizado"""
         if not self.azure_ready:
             self.log_to_gui("❌ Azure Speech no está configurado")
             return
@@ -928,8 +1543,8 @@ class VoiceBridge220:
                 self.speech_recognizer.start_continuous_recognition_async()
                 self.is_listening = True
                 self.update_ui_state()
-                self.log_to_gui("🎤 Reconocimiento iniciado")
-                self.logger.info("Reconocimiento de voz iniciado")
+                self.log_to_gui("🎤 Reconocimiento iniciado - MODO RÁPIDO ⚡")
+                self.logger.info("Reconocimiento de voz iniciado en modo optimizado")
 
         except Exception as e:
             error_msg = f"❌ Error iniciando reconocimiento: {str(e)}"
@@ -965,7 +1580,7 @@ class VoiceBridge220:
                     bg=colors['danger']
                 )
                 self.status_label.configure(
-                    text=texts['recognizing'],
+                    text=texts['recognizing'] + " ⚡",
                     fg=colors['success']
                 )
             else:
@@ -990,8 +1605,6 @@ class VoiceBridge220:
         except Exception as e:
             self.logger.error(f"Error actualizando UI: {e}")
 
-    # ... (resto de métodos como process_medical_buffer, add_to_transcription, etc. permanecen igual)
-
     def log_to_gui(self, message):
         """Agregar mensaje al log de la interfaz"""
         try:
@@ -1006,24 +1619,33 @@ class VoiceBridge220:
             self.logger.error(f"Error en log GUI: {e}")
 
     def open_config(self):
-        """Abrir configuración Azure si no está configurado"""
-        if not self.check_azure_config():
-            config_data = AzureConfigDialog(self.root).show()
-            if config_data:
-                self.config.update(config_data)
-                # Guardar y reconfigurar
-                config_file = Path.home() / "voice-bridge-claude" / "config" / "voice_bridge_config.ini"
-                config = configparser.ConfigParser()
-                config['DEFAULT'] = dict(self.config)
-                with open(config_file, 'w') as f:
-                    config.write(f)
-                # Reconfigurar Azure
-                threading.Thread(target=self.delayed_azure_setup, daemon=True).start()
-        else:
-            self.log_to_gui("⚙️ Azure ya está configurado")
+        """Abrir ventana completa de configuración - CORREGIDO"""
+        try:
+            # CORRECCIÓN: Pasar dict en lugar de SectionProxy
+            config_window = ConfigWindow(self.root, self.config)
+
+            # Esperar a que se cierre la ventana y recargar configuración si es necesario
+            def check_config_changes():
+                if hasattr(config_window, 'window') and config_window.window.winfo_exists():
+                    self.root.after(100, check_config_changes)
+                else:
+                    # Recargar configuración
+                    self.config = self.load_config()
+                    self.load_ui_preferences()
+
+                    # Reconfigurar Azure si es necesario
+                    if self.azure_ready:
+                        self.log_to_gui("🔄 Reconfigurando Azure con nuevos parámetros...")
+                        threading.Thread(target=self.delayed_azure_setup, daemon=True).start()
+
+            self.root.after(100, check_config_changes)
+
+        except Exception as e:
+            self.log_to_gui(f"❌ Error abriendo configuración: {e}")
+            self.logger.error(f"Error en open_config: {e}")
 
     def process_medical_buffer(self):
-        """Procesar buffer médico acumulado"""
+        """Procesar buffer médico acumulado - OPTIMIZADO"""
         if not self.medical_buffer:
             return
 
@@ -1049,14 +1671,14 @@ class VoiceBridge220:
             # Actualizar estadísticas
             self.stats_collector.update(full_text, was_corrected, is_repetition)
 
-            # Agregar a transcripción
+            # Agregar a transcripción INMEDIATAMENTE
             self.add_to_transcription(full_text)
 
         except Exception as e:
             self.logger.error(f"Error procesando buffer médico: {e}")
 
     def add_to_transcription(self, text):
-        """Agregar texto a la transcripción"""
+        """Agregar texto a la transcripción - OPTIMIZADO"""
         if not text or not text.strip():
             return
 
@@ -1107,7 +1729,7 @@ class VoiceBridge220:
             # Crear metadatos de sesión
             stats = self.stats_collector.stats
             session_info = f"""
-=== SESIÓN VOICE BRIDGE v2.2.1 ===
+=== SESIÓN VOICE BRIDGE v2.2.3 OPTIMIZADO CORREGIDO ===
 Fecha: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 Duración: {datetime.now() - self.session_start}
 Frases totales: {stats['total_phrases']}
@@ -1115,6 +1737,7 @@ Palabras totales: {stats['total_words']}
 Caracteres totales: {stats['total_characters']}
 Correcciones aplicadas: {stats['corrections_applied']}
 Repeticiones detectadas: {stats['repetitions_detected']}
+Pausa configurada: {self.medical_pause_seconds}s
 
 === TRANSCRIPCIÓN ===
 {content}
@@ -1149,7 +1772,10 @@ Repeticiones detectadas: {stats['repetitions_detected']}
                     "dolor de cabesa": "dolor de cabeza",
                     "fiebre alta": "fiebre alta",
                     "presion arterial": "presión arterial",
-                    "frecuencia cardiaca": "frecuencia cardíaca"
+                    "frecuencia cardiaca": "frecuencia cardíaca",
+                    "temperatura corporal": "temperatura corporal",
+                    "examen fisico": "examen físico",
+                    "historia clinica": "historia clínica"
                 }
                 config_dir.mkdir(parents=True, exist_ok=True)
                 with open(terms_file, 'w', encoding='utf-8') as f:
@@ -1177,28 +1803,32 @@ Repeticiones detectadas: {stats['repetitions_detected']}
             self.logger.error(f"Error configurando hotkeys: {e}")
 
     def start_update_loops(self):
-        """Iniciar loops de actualización"""
+        """Iniciar loops de actualización OPTIMIZADOS"""
 
         def transcription_loop():
-            """Loop para procesar transcripciones"""
+            """Loop para procesar transcripciones - MODO RÁPIDO"""
             while True:
                 try:
-                    msg_type, text = self.transcription_queue.get(timeout=0.1)
+                    msg_type, text = self.transcription_queue.get(timeout=0.05)  # Timeout más corto
 
                     if msg_type == 'final' and text.strip():
                         # Agregar a buffer médico
                         self.medical_buffer.append(text.strip())
                         self.last_activity_time = time.time()
 
-                        # Configurar timer para procesar buffer
+                        # Configurar timer para procesar buffer (TIEMPO REDUCIDO)
                         if self.buffer_timer:
                             self.buffer_timer.cancel()
 
                         self.buffer_timer = threading.Timer(
-                            self.medical_pause_seconds,
+                            self.medical_pause_seconds,  # Tiempo optimizado
                             self.process_medical_buffer
                         )
                         self.buffer_timer.start()
+
+                    elif msg_type == 'partial' and text.strip():
+                        # Mostrar texto parcial para feedback inmediato
+                        pass  # Por ahora no mostramos parciales para no saturar
 
                 except queue.Empty:
                     pass
@@ -1206,11 +1836,11 @@ Repeticiones detectadas: {stats['repetitions_detected']}
                     self.logger.error(f"Error en transcription_loop: {e}")
 
         def ui_update_loop():
-            """Loop para actualizar UI"""
+            """Loop para actualizar UI - OPTIMIZADO"""
             while True:
                 try:
                     self.root.after(0, self.update_ui_state)
-                    time.sleep(1)
+                    time.sleep(0.5)  # Actualización más frecuente
                 except Exception as e:
                     self.logger.error(f"Error en ui_update_loop: {e}")
 
@@ -1221,7 +1851,7 @@ Repeticiones detectadas: {stats['repetitions_detected']}
     def on_closing(self):
         """Manejar cierre de la aplicación"""
         try:
-            self.logger.info("Cerrando Voice Bridge v2.2.1...")
+            self.logger.info("Cerrando Voice Bridge v2.2.3...")
 
             # Detener reconocimiento
             if self.is_listening:
@@ -1235,7 +1865,7 @@ Repeticiones detectadas: {stats['repetitions_detected']}
             if hasattr(self, 'hotkey_listener'):
                 self.hotkey_listener.stop()
 
-            self.logger.info("Voice Bridge v2.2.1 cerrado correctamente")
+            self.logger.info("Voice Bridge v2.2.3 cerrado correctamente")
 
         except Exception as e:
             self.logger.error(f"Error cerrando aplicación: {e}")

@@ -1,5 +1,23 @@
 # Voice Bridge v2.2 - Release Notes
 
+## [2.2.3] - 2025-07-22 - "Medical Terminology Enhancement"
+
+### 🎉 Added
+- **Expanded medical dictionary** with 500+ common terms
+- **Context-aware corrections** for better accuracy
+- **Spanish medical terminology** specialized recognition
+- **Auto-learning system** for frequently used terms
+
+### 🚀 Changed
+- **Improved recognition for pathology terms** with domain-specific optimization
+- **Better handling of Latin medical terms** and abbreviations
+- **Enhanced punctuation processing** for professional reports
+
+### 🐛 Fixed
+- **False positive corrections** in non-medical contexts
+- **Performance issues** with large terminology databases
+- **Memory usage optimization** for dictionary lookups
+
 ## [2.2.2] - 2025-07-18 - "Stability and Performance"
 
 ### 🎉 Added
