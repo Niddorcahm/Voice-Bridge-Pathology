@@ -1,0 +1,200 @@
+# === PYTHON STANDARD ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# === VIRTUAL ENVIRONMENTS ===
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.conda/
+
+# === IDEs AND EDITORS ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vimrc
+.vim/
+
+# === VOICE BRIDGE PATHOLOGY SPECIFIC ===
+# Configuration files with sensitive data
+voice_bridge_config.json
+voice_bridge_config.ini
+config/voice_bridge_config.ini
+config/*.json
+*.key
+*.token
+*.env
+.env.*
+
+# Medical transcriptions and logs (HIPAA CRITICAL)
+logs/
+archive/
+transcripciones_*.txt
+sesion_medica_*.txt
+voice_bridge_*.log
+pathology_session_*.txt
+biopsy_report_*.txt
+diagnosis_*.txt
+
+# Audio files from medical sessions
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+*.aac
+audio_tests/
+recorded_sessions/
+test_audio/
+
+# Medical data - NEVER COMMIT
+patient_*
+caso_*
+paciente_*
+transcripciones/
+sesiones/
+medical_data/
+pathology_reports/
+biopsy_results/
+diagnostic_images/
+backup_*
+*_backup
+*_respaldo
+
+# Pathology specific files
+histopathology_*
+citologia_*
+molecular_pathology_*
+immunohistochemistry_*
+casos_patologia/
+reportes_biopsia/
+
+# Azure Speech SDK
+.azure/
+speech_cache/
+cognitive_services_cache/
+
+# Claude AI integration
+claude_conversations/
+ai_responses/
+claude_cache/
+
+# Development and testing
+temp/
+tmp/
+*.tmp
+*.temp
+.cache/
+test_data/
+mock_data/
+sample_audio/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+tests/test_data/
+tests/fixtures/
+
+# Documentation builds
+docs/_build/
+site/
+_site/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Package managers
+package-lock.json
+yarn.lock
+Pipfile.lock
+poetry.lock
+pnpm-lock.yaml
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+medical_db.sql
+
+# Installation artifacts
+installer_*
+setup_*.exe
+*.msi
+*.deb
+*.rpm
+
+# Medical compliance - HIPAA CRITICAL
+# These patterns ensure no medical data is accidentally committed
+historial_medico_*
+diagnosticos_*
+reportes_patologia_*
+transcripcion_paciente_*
+caso_[0-9]*
+patient_[0-9]*
+biopsia_*
+citologia_*
+inmunohistoquimica_*
+molecular_*
+gastroenterologia_*
+dermatopatologia_*
+
+# Specific pathology file types
+*.dcm        # DICOM files
+*.svs        # Aperio slide files
+*.ndpi       # Hamamatsu slide files
+*.tiff       # High-resolution pathology images
+*.czi        # Zeiss microscopy files
+
+# Backup directories
+backups/
+old_versions/
+migration_backup/
+
+# Lock files
+*.lock
+
+# Personal development files
+notes.txt
+TODO.txt
+dev_notes.md
+scratch.py
