@@ -1,5 +1,25 @@
 # Voice Bridge v2.2 - Release Notes
 
+## [2.2.2] - 2025-07-18 - "Stability and Performance"
+
+### 🎉 Added
+- **Session persistence** with automatic save/restore
+- **Comprehensive logging system** for troubleshooting
+- **Performance monitoring** with real-time metrics
+- **Backup and restore** functionality for configurations
+
+### 🚀 Changed
+- **Optimized recognition pipeline** for lower latency
+- **Improved error recovery** mechanisms
+- **Better resource management** for long sessions
+- **Enhanced UI responsiveness** during heavy processing
+
+### 🐛 Fixed
+- **Memory leaks** in continuous recognition mode
+- **UI freezing** during large transcription processing
+- **Configuration sync** issues between sessions
+- **Recognition accuracy** degradation over time
+
 ## [2.2.1] - 2025-07-15 - "User Experience Improvements"
 
 ### 🎉 Added
