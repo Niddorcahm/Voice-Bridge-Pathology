@@ -1,5 +1,25 @@
 # Voice Bridge v2.2 - Release Notes
 
+## [2.2.1] - 2025-07-15 - "User Experience Improvements"
+
+### 🎉 Added
+- **Keyboard shortcuts** for common actions
+- **Customizable UI themes** with multiple color schemes
+- **Status indicators** for all system components
+- **Quick configuration** presets for different use cases
+
+### 🚀 Changed
+- **Simplified setup process** with guided configuration
+- **Better visual feedback** for recognition states
+- **Improved error messages** with actionable suggestions
+- **Enhanced documentation** with video tutorials
+
+### 🐛 Fixed
+- **Configuration window** layout issues on different screen sizes
+- **Recognition button** state inconsistencies
+- **Audio level** display accuracy
+- **Help system** navigation problems
+
 ## [2.2.0] - 2025-07-10 - "Major Architecture Update"
 
 ### 🎉 Added
