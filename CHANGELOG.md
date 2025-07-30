@@ -1,4 +1,11 @@
-# Voice Bridge v2.0 - Release Notes
+# Voice Bridge v2.1 - Release Notes
+
+
+### [2.1.0] - 2025-06-25
+- **Azure Speech SDK** integration
+- **Basic medical terminology** support
+- **Ubuntu compatibility** for PipeWire/PulseAudio
+- **Simple GUI** with start/stop functionality
 
 ## Version 2.0.0 (2025-01-09)
 
