@@ -1,4 +1,25 @@
-# Voice Bridge v2.1 - Release Notes
+# Voice Bridge v2.2 - Release Notes
+
+## [2.2.0] - 2025-07-10 - "Major Architecture Update"
+
+### 🎉 Added
+- **Modular architecture** for better maintainability
+- **Plugin system** for extensible functionality  
+- **Advanced audio processing** with noise reduction
+- **Multi-language support** framework
+- **Professional logging** with rotation and compression
+
+### 🚀 Changed
+- **Complete codebase restructuring** for better organization
+- **Improved Azure SDK integration** with latest APIs
+- **Enhanced configuration management** with validation
+- **Better separation of concerns** between components
+
+### 🐛 Fixed
+- **Threading issues** causing occasional crashes
+- **Resource cleanup** problems on application exit
+- **Configuration persistence** across updates
+- **Audio driver compatibility** on various Linux distributions
 
 ### [2.1.3] - 2025-07-05
 - **Enhanced recognition accuracy** for medical terms
