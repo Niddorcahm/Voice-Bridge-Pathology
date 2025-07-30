@@ -1,5 +1,19 @@
 # Voice Bridge v2.1 - Release Notes
 
+### [2.1.3] - 2025-07-05
+- **Enhanced recognition accuracy** for medical terms
+- **Improved audio handling** on Ubuntu 24.04
+- **Better error reporting** and diagnostics
+
+### [2.1.2] - 2025-07-01  
+- **PipeWire compatibility** improvements
+- **Recognition timeout** optimizations
+- **UI polish** and bug fixes
+
+### [2.1.1] - 2025-06-28
+- **Audio system** stability improvements
+- **Configuration** validation enhancements
+- **Documentation** updates and clarifications
 
 ### [2.1.0] - 2025-06-25
 - **Azure Speech SDK** integration
