@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Voice Bridge v224 - Versión Completamente Reescrita SIN DEPENDENCIAS ADICIONALES
-Reconocimiento de voz médico con Azure Speech SDK optimizado para PipeWire
+Voice Bridge v225 - Versión Completamente Reescrita CON INTEGRACIÓN CLAUDE
+Reconocimiento de voz médico con Azure Speech SDK y envío automático a Claude
 """
 
 import tkinter as tk
@@ -17,11 +17,12 @@ import logging
 import queue
 import subprocess
 import re
+import requests
 from datetime import datetime
 from difflib import SequenceMatcher
 
 # ===== CONFIGURACIONES GLOBALES =====
-VERSION = "2.2.4"
+VERSION = "2.2.5"
 CONFIG_FILE = "voice_bridge_config.json"
 MEDICAL_TERMS_FILE = "medical_terms.json"
 
@@ -51,6 +52,72 @@ def setup_logger():
         logger.addHandler(file_handler)
 
     return logger
+
+
+# ===== INTEGRACIÓN CLAUDE =====
+class ClaudeIntegration:
+    """Integración con Claude API"""
+
+    def __init__(self, api_key=None, model="claude-3-sonnet-20240229"):
+        self.api_key = api_key
+        self.model = model
+        self.base_url = "https://api.anthropic.com/v1/messages"
+        self.session = requests.Session()
+        self.session.headers.update({
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01"
+        })
+        if self.api_key:
+            self.session.headers.update({"x-api-key": self.api_key})
+
+    def is_configured(self):
+        """Verificar si Claude está configurado"""
+        return bool(self.api_key)
+
+    def send_medical_text(self, text, context="transcription"):
+        """Enviar texto médico a Claude"""
+        if not self.is_configured():
+            raise Exception("Claude API key no configurada")
+
+        # Prompt especializado para transcripciones médicas
+        system_prompt = """Eres un asistente médico especializado en análisis de transcripciones médicas. 
+        Tu trabajo es:
+        1. Corregir errores de transcripción médica
+        2. Formatear el texto de manera profesional
+        3. Identificar términos médicos clave
+        4. Sugerir completar información faltante si es necesario
+        5. Mantener el contexto médico original
+
+        Responde de forma concisa y profesional."""
+
+        user_prompt = f"Analiza y mejora esta transcripción médica:\n\n{text}"
+
+        payload = {
+            "model": self.model,
+            "max_tokens": 1024,
+            "system": system_prompt,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": user_prompt
+                }
+            ]
+        }
+
+        try:
+            response = self.session.post(self.base_url, json=payload, timeout=30)
+            response.raise_for_status()
+
+            data = response.json()
+            if "content" in data and len(data["content"]) > 0:
+                return data["content"][0]["text"]
+            else:
+                raise Exception("Respuesta inválida de Claude")
+
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Error de conexión con Claude: {e}")
+        except Exception as e:
+            raise Exception(f"Error procesando respuesta de Claude: {e}")
 
 
 # ===== SISTEMA DE TEMAS =====
@@ -113,7 +180,8 @@ class ThemeSystem:
                 "accent": "#0078d4",
                 "success": "#0dbc79",
                 "warning": "#ffb900",
-                "error": "#d13438"
+                "error": "#d13438",
+                "claude": "#7c3aed"
             },
             "light": {
                 "bg": "#f0f0f0",
@@ -128,7 +196,8 @@ class ThemeSystem:
                 "accent": "#0078d4",
                 "success": "#107c10",
                 "warning": "#ff8c00",
-                "error": "#d13438"
+                "error": "#d13438",
+                "claude": "#7c3aed"
             }
         }
         return themes.get(self.current_theme, themes["dark"])
@@ -146,25 +215,31 @@ class ThemeSystem:
         """Obtener textos localizados"""
         texts = {
             "es": {
-                "title": "Voice Bridge v2.2.4 - Reconocimiento Médico",
+                "title": "Voice Bridge v2.2.4 - Reconocimiento Médico + Claude",
                 "start": "Iniciar",
                 "stop": "Detener",
                 "config": "Configurar",
                 "clear": "Limpiar",
                 "save": "Guardar",
+                "send_claude": "Enviar a Claude",
                 "status_ready": "Listo",
                 "status_listening": "Escuchando...",
                 "status_error": "Error",
                 "transcription": "Transcripción:",
+                "claude_response": "Respuesta de Claude:",
                 "stats": "Estadísticas",
                 "phrases": "Frases:",
                 "corrections": "Correcciones:",
                 "repetitions": "Repeticiones:",
                 "session_time": "Tiempo sesión:",
+                "claude_calls": "Llamadas Claude:",
                 "azure_config": "Configuración Azure",
-                "azure_key": "Clave API:",
+                "claude_config": "Configuración Claude",
+                "azure_key": "Clave API Azure:",
+                "claude_key": "Clave API Claude:",
                 "azure_region": "Región:",
                 "azure_language": "Idioma:",
+                "auto_send_claude": "Envío automático a Claude",
                 "test_connection": "Probar Conexión",
                 "save_config": "Guardar Configuración",
                 "cancel": "Cancelar"
@@ -273,11 +348,12 @@ class StatsCollector:
             'words_count': 0,
             'corrections_applied': 0,
             'repetitions_detected': 0,
+            'claude_calls': 0,
             'session_duration': 0,
             'chars_transcribed': 0
         }
 
-    def update(self, phrase, corrections=0, is_repetition=False):
+    def update(self, phrase=None, corrections=0, is_repetition=False, claude_call=False):
         """Actualizar estadísticas"""
         if phrase:
             self.stats['phrases_count'] += 1
@@ -289,12 +365,15 @@ class StatsCollector:
         if is_repetition:
             self.stats['repetitions_detected'] += 1
 
+        if claude_call:
+            self.stats['claude_calls'] += 1
+
         self.stats['session_duration'] = int(time.time() - self.session_start)
 
 
 # ===== CLASE PRINCIPAL =====
 class VoiceBridge224:
-    """Aplicación principal Voice Bridge v2.2.4"""
+    """Aplicación principal Voice Bridge v2.2.4 con Claude"""
 
     def __init__(self):
         # Inicialización del logger
@@ -316,6 +395,9 @@ class VoiceBridge224:
         # Configuración
         self.config = {}
         self.load_config()
+
+        # Integración Claude
+        self.claude = ClaudeIntegration(self.config.get('claude_api_key'))
 
         # Componentes Azure (se inicializan después)
         self.speech_config = None
@@ -345,6 +427,9 @@ class VoiceBridge224:
             'azure_key': '',
             'azure_region': 'eastus',
             'azure_language': 'es-ES',
+            'claude_api_key': '',
+            'auto_send_claude': True,
+            'claude_model': 'claude-3-sonnet-20240229',
             'theme': 'dark',
             'ui_language': 'es',
             'medical_pause_seconds': 2.0,
@@ -384,8 +469,8 @@ class VoiceBridge224:
         """Configurar interfaz gráfica"""
         self.root = tk.Tk()
         self.root.title(self.theme_system.get_texts()["title"])
-        self.root.geometry("800x600")
-        self.root.minsize(600, 400)
+        self.root.geometry("1000x700")
+        self.root.minsize(800, 600)
 
         # Aplicar tema
         self.apply_theme()
@@ -468,6 +553,21 @@ class VoiceBridge224:
         )
         config_button.pack(side='left', padx=(0, 10))
 
+        # Botón enviar a Claude
+        self.claude_button = tk.Button(
+            control_frame,
+            text=texts["send_claude"],
+            command=self.send_to_claude_manual,
+            bg=theme["claude"],
+            fg="white",
+            font=fonts["primary"],
+            padx=15,
+            pady=10,
+            relief='flat',
+            cursor='hand2'
+        )
+        self.claude_button.pack(side='left', padx=(0, 10))
+
         # Botón limpiar
         clear_button = tk.Button(
             control_frame,
@@ -512,13 +612,17 @@ class VoiceBridge224:
         )
         self.status_label.pack(fill='x')
 
-        # ===== SECCIÓN DE TRANSCRIPCIÓN =====
-        transcription_frame = ttk.Frame(main_frame, style='Custom.TFrame')
-        transcription_frame.pack(fill='both', expand=True, pady=(0, 10))
+        # ===== SECCIÓN PRINCIPAL DIVIDIDA =====
+        content_frame = ttk.Frame(main_frame, style='Custom.TFrame')
+        content_frame.pack(fill='both', expand=True, pady=(0, 10))
+
+        # Frame izquierdo para transcripción
+        left_frame = ttk.Frame(content_frame, style='Custom.TFrame')
+        left_frame.pack(side='left', fill='both', expand=True, padx=(0, 5))
 
         # Etiqueta de transcripción
         transcription_label = tk.Label(
-            transcription_frame,
+            left_frame,
             text=texts["transcription"],
             bg=theme["bg"],
             fg=theme["fg"],
@@ -529,7 +633,7 @@ class VoiceBridge224:
 
         # Área de texto de transcripción
         self.transcriptions_text = scrolledtext.ScrolledText(
-            transcription_frame,
+            left_frame,
             wrap=tk.WORD,
             bg=theme["text_bg"],
             fg=theme["text_fg"],
@@ -542,6 +646,37 @@ class VoiceBridge224:
             highlightcolor=theme["accent"]
         )
         self.transcriptions_text.pack(fill='both', expand=True)
+
+        # Frame derecho para Claude
+        right_frame = ttk.Frame(content_frame, style='Custom.TFrame')
+        right_frame.pack(side='right', fill='both', expand=True, padx=(5, 0))
+
+        # Etiqueta de Claude
+        claude_label = tk.Label(
+            right_frame,
+            text=texts["claude_response"],
+            bg=theme["bg"],
+            fg=theme["claude"],
+            font=fonts["heading"],
+            anchor='w'
+        )
+        claude_label.pack(fill='x', pady=(0, 5))
+
+        # Área de texto de Claude
+        self.claude_text = scrolledtext.ScrolledText(
+            right_frame,
+            wrap=tk.WORD,
+            bg=theme["text_bg"],
+            fg=theme["claude"],
+            font=fonts["mono"],
+            insertbackground=theme["claude"],
+            selectbackground=theme["select_bg"],
+            relief='flat',
+            borderwidth=2,
+            highlightthickness=1,
+            highlightcolor=theme["claude"]
+        )
+        self.claude_text.pack(fill='both', expand=True)
 
         # ===== SECCIÓN DE ESTADÍSTICAS =====
         if self.config.get('show_stats', True):
@@ -592,6 +727,7 @@ class VoiceBridge224:
         self.phrases_label = self.create_stat_widget(stats_content, texts["phrases"], "0")
         self.corrections_label = self.create_stat_widget(stats_content, texts["corrections"], "0")
         self.repetitions_label = self.create_stat_widget(stats_content, texts["repetitions"], "0")
+        self.claude_calls_label = self.create_stat_widget(stats_content, texts["claude_calls"], "0")
         self.session_time_label = self.create_stat_widget(stats_content, texts["session_time"], "00:00")
 
     def create_stat_widget(self, parent, label_text, value_text):
@@ -715,6 +851,12 @@ class VoiceBridge224:
 
             # === PASO 9: OPTIMIZAR PIPEWIRE ===
             self.optimize_pipewire_for_dictation()
+
+            # Verificar Claude
+            if self.claude.is_configured():
+                self.log_to_gui("🤖 Claude API configurada")
+            else:
+                self.log_to_gui("⚠️ Claude API no configurada - funcionalidad limitada")
 
             # Marcar como listo
             self.azure_ready = True
@@ -1045,6 +1187,10 @@ class VoiceBridge224:
         # Procesar con buffer médico
         self.add_to_medical_buffer(text)
 
+        # Enviar a Claude automáticamente si está habilitado
+        if self.config.get('auto_send_claude', True) and self.claude.is_configured():
+            threading.Thread(target=self.send_to_claude_auto, args=(text,), daemon=True).start()
+
         # Actualizar UI
         self.update_stats_display()
 
@@ -1096,6 +1242,69 @@ class VoiceBridge224:
         # Incrementar contador
         self.transcription_count += 1
 
+    def send_to_claude_auto(self, text):
+        """Enviar texto a Claude automáticamente"""
+        try:
+            if not self.claude.is_configured():
+                return
+
+            self.log_to_gui("🤖 Enviando a Claude...")
+            response = self.claude.send_medical_text(text)
+
+            # Actualizar UI en hilo principal
+            self.root.after(0, lambda: self.display_claude_response(response))
+
+            # Actualizar estadísticas
+            self.stats_collector.update(claude_call=True)
+            self.root.after(0, self.update_stats_display)
+
+        except Exception as e:
+            self.log_to_gui(f"❌ Error Claude automático: {e}")
+
+    def send_to_claude_manual(self):
+        """Enviar transcripción completa a Claude manualmente"""
+        try:
+            if not self.claude.is_configured():
+                messagebox.showwarning("Claude no configurado",
+                                       "Por favor configure la API key de Claude en la configuración")
+                return
+
+            # Obtener todo el texto de transcripción
+            full_text = self.transcriptions_text.get(1.0, tk.END).strip()
+            if not full_text:
+                messagebox.showwarning("Sin contenido", "No hay transcripción para enviar")
+                return
+
+            self.log_to_gui("🤖 Enviando transcripción completa a Claude...")
+
+            # Enviar en hilo separado
+            def send_full_text():
+                try:
+                    response = self.claude.send_medical_text(full_text, context="full_transcription")
+                    self.root.after(0, lambda: self.display_claude_response(response, clear_previous=True))
+                    self.stats_collector.update(claude_call=True)
+                    self.root.after(0, self.update_stats_display)
+                except Exception as e:
+                    self.root.after(0, lambda: self.log_to_gui(f"❌ Error Claude manual: {e}"))
+
+            threading.Thread(target=send_full_text, daemon=True).start()
+
+        except Exception as e:
+            self.log_to_gui(f"❌ Error enviando a Claude: {e}")
+
+    def display_claude_response(self, response, clear_previous=False):
+        """Mostrar respuesta de Claude en la interfaz"""
+        if clear_previous:
+            self.claude_text.delete(1.0, tk.END)
+
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        formatted_response = f"[{timestamp}] {response}\n\n"
+
+        self.claude_text.insert(tk.END, formatted_response)
+        self.claude_text.see(tk.END)
+
+        self.log_to_gui("✅ Respuesta de Claude recibida")
+
     def update_partial_text(self, text):
         """Actualizar texto parcial en tiempo real"""
         # Esta funcionalidad se puede implementar con un área separada
@@ -1123,6 +1332,13 @@ class VoiceBridge224:
             else:
                 self.update_status(texts["status_error"])
 
+        # Habilitar/deshabilitar botón Claude según configuración
+        if hasattr(self, 'claude_button'):
+            if self.claude.is_configured():
+                self.claude_button.configure(state='normal')
+            else:
+                self.claude_button.configure(state='disabled')
+
     def update_status(self, status_text):
         """Actualizar etiqueta de estado"""
         if hasattr(self, 'status_label'):
@@ -1142,6 +1358,8 @@ class VoiceBridge224:
             self.corrections_label.configure(text=str(stats['corrections_applied']))
         if hasattr(self, 'repetitions_label'):
             self.repetitions_label.configure(text=str(stats['repetitions_detected']))
+        if hasattr(self, 'claude_calls_label'):
+            self.claude_calls_label.configure(text=str(stats['claude_calls']))
 
         # Actualizar tiempo de sesión
         if hasattr(self, 'session_time_label'):
@@ -1168,28 +1386,35 @@ class VoiceBridge224:
         """Limpiar área de transcripción"""
         if messagebox.askyesno("Confirmar", "¿Limpiar toda la transcripción?"):
             self.transcriptions_text.delete(1.0, tk.END)
+            self.claude_text.delete(1.0, tk.END)
             self.medical_buffer = ""
             self.transcription_count = 0
-            self.log_to_gui("🗑️ Transcripción limpiada")
+            self.log_to_gui("🗑️ Transcripción y respuestas Claude limpiadas")
 
     def save_session(self):
         """Guardar sesión actual"""
         try:
-            content = self.transcriptions_text.get(1.0, tk.END)
-            if not content.strip():
+            transcription_content = self.transcriptions_text.get(1.0, tk.END)
+            claude_content = self.claude_text.get(1.0, tk.END)
+
+            if not transcription_content.strip() and not claude_content.strip():
                 messagebox.showwarning("Advertencia", "No hay contenido para guardar")
                 return
 
             filename = filedialog.asksaveasfilename(
                 defaultextension=".txt",
                 filetypes=[("Archivos de texto", "*.txt"), ("Todos los archivos", "*.*")],
-                initialfile=f"transcripcion_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
-                # ✅ Cambiado de initialname a initialfile
+                initialfile=f"transcripcion_claude_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
             )
 
             if filename:
                 with open(filename, 'w', encoding='utf-8') as f:
-                    f.write(content)
+                    f.write("=== TRANSCRIPCIÓN MÉDICA ===\n\n")
+                    f.write(transcription_content)
+
+                    if claude_content.strip():
+                        f.write("\n\n=== ANÁLISIS DE CLAUDE ===\n\n")
+                        f.write(claude_content)
 
                     # Agregar estadísticas al final
                     stats = self.stats_collector.stats
@@ -1199,6 +1424,7 @@ class VoiceBridge224:
                     f.write(f"Caracteres: {stats['chars_transcribed']}\n")
                     f.write(f"Correcciones aplicadas: {stats['corrections_applied']}\n")
                     f.write(f"Repeticiones detectadas: {stats['repetitions_detected']}\n")
+                    f.write(f"Llamadas a Claude: {stats['claude_calls']}\n")
                     f.write(f"Duración: {stats['session_duration']} segundos\n")
 
                 self.log_to_gui(f"💾 Sesión guardada: {filename}")
@@ -1268,7 +1494,7 @@ class VoiceBridge224:
 
 # ===== VENTANA DE CONFIGURACIÓN =====
 class ConfigWindow:
-    """Ventana de configuración de Azure"""
+    """Ventana de configuración de Azure y Claude"""
 
     def __init__(self, parent):
         self.parent = parent
@@ -1278,8 +1504,8 @@ class ConfigWindow:
     def create_window(self):
         """Crear ventana de configuración"""
         self.window = tk.Toplevel(self.parent.root)
-        self.window.title("Configuración Azure Speech")
-        self.window.geometry("500x400")
+        self.window.title("Configuración Azure Speech + Claude")
+        self.window.geometry("600x500")
         self.window.resizable(False, False)
         self.window.transient(self.parent.root)
         self.window.grab_set()
@@ -1310,17 +1536,26 @@ class ConfigWindow:
         # Título
         title_label = tk.Label(
             main_frame,
-            text=texts["azure_config"],
+            text="Configuración Azure + Claude",
             bg=theme["bg"],
             fg=theme["accent"],
             font=fonts["heading"]
         )
         title_label.pack(pady=(0, 20))
 
-        # === CONFIGURACIÓN AZURE ===
-        # Clave API
-        key_frame = tk.Frame(main_frame, bg=theme["bg"])
-        key_frame.pack(fill='x', pady=5)
+        # ===== CONFIGURACIÓN AZURE =====
+        azure_frame = tk.LabelFrame(
+            main_frame,
+            text=texts["azure_config"],
+            bg=theme["bg"],
+            fg=theme["fg"],
+            font=fonts["primary"]
+        )
+        azure_frame.pack(fill='x', pady=(0, 15))
+
+        # Clave API Azure
+        key_frame = tk.Frame(azure_frame, bg=theme["bg"])
+        key_frame.pack(fill='x', padx=10, pady=5)
 
         tk.Label(
             key_frame,
@@ -1330,19 +1565,19 @@ class ConfigWindow:
             font=fonts["primary"]
         ).pack(anchor='w')
 
-        self.key_entry = tk.Entry(
+        self.azure_key_entry = tk.Entry(
             key_frame,
             bg=theme["entry_bg"],
             fg=theme["entry_fg"],
             font=fonts["primary"],
             show="*"
         )
-        self.key_entry.pack(fill='x', pady=(5, 0))
-        self.key_entry.insert(0, self.config.get('azure_key', ''))
+        self.azure_key_entry.pack(fill='x', pady=(5, 0))
+        self.azure_key_entry.insert(0, self.config.get('azure_key', ''))
 
-        # Región
-        region_frame = tk.Frame(main_frame, bg=theme["bg"])
-        region_frame.pack(fill='x', pady=5)
+        # Región Azure
+        region_frame = tk.Frame(azure_frame, bg=theme["bg"])
+        region_frame.pack(fill='x', padx=10, pady=5)
 
         tk.Label(
             region_frame,
@@ -1352,18 +1587,18 @@ class ConfigWindow:
             font=fonts["primary"]
         ).pack(anchor='w')
 
-        self.region_var = tk.StringVar(value=self.config.get('azure_region', 'eastus'))
+        self.azure_region_var = tk.StringVar(value=self.config.get('azure_region', 'eastus'))
         region_combo = ttk.Combobox(
             region_frame,
-            textvariable=self.region_var,
+            textvariable=self.azure_region_var,
             values=['eastus', 'westus', 'westeurope', 'eastasia', 'southeastasia', 'northeurope'],
             state='readonly'
         )
         region_combo.pack(fill='x', pady=(5, 0))
 
-        # Idioma
-        lang_frame = tk.Frame(main_frame, bg=theme["bg"])
-        lang_frame.pack(fill='x', pady=5)
+        # Idioma Azure
+        lang_frame = tk.Frame(azure_frame, bg=theme["bg"])
+        lang_frame.pack(fill='x', padx=10, pady=5)
 
         tk.Label(
             lang_frame,
@@ -1373,16 +1608,61 @@ class ConfigWindow:
             font=fonts["primary"]
         ).pack(anchor='w')
 
-        self.lang_var = tk.StringVar(value=self.config.get('azure_language', 'es-ES'))
+        self.azure_lang_var = tk.StringVar(value=self.config.get('azure_language', 'es-ES'))
         lang_combo = ttk.Combobox(
             lang_frame,
-            textvariable=self.lang_var,
+            textvariable=self.azure_lang_var,
             values=['es-ES', 'en-US', 'en-GB', 'fr-FR', 'de-DE', 'it-IT', 'pt-BR'],
             state='readonly'
         )
         lang_combo.pack(fill='x', pady=(5, 0))
 
-        # === CONFIGURACIONES AVANZADAS ===
+        # ===== CONFIGURACIÓN CLAUDE =====
+        claude_frame = tk.LabelFrame(
+            main_frame,
+            text=texts["claude_config"],
+            bg=theme["bg"],
+            fg=theme["claude"],
+            font=fonts["primary"]
+        )
+        claude_frame.pack(fill='x', pady=(0, 15))
+
+        # Clave API Claude
+        claude_key_frame = tk.Frame(claude_frame, bg=theme["bg"])
+        claude_key_frame.pack(fill='x', padx=10, pady=5)
+
+        tk.Label(
+            claude_key_frame,
+            text=texts["claude_key"],
+            bg=theme["bg"],
+            fg=theme["fg"],
+            font=fonts["primary"]
+        ).pack(anchor='w')
+
+        self.claude_key_entry = tk.Entry(
+            claude_key_frame,
+            bg=theme["entry_bg"],
+            fg=theme["entry_fg"],
+            font=fonts["primary"],
+            show="*"
+        )
+        self.claude_key_entry.pack(fill='x', pady=(5, 0))
+        self.claude_key_entry.insert(0, self.config.get('claude_api_key', ''))
+
+        # Envío automático a Claude
+        self.auto_send_var = tk.BooleanVar(value=self.config.get('auto_send_claude', True))
+        auto_send_check = tk.Checkbutton(
+            claude_frame,
+            text=texts["auto_send_claude"],
+            variable=self.auto_send_var,
+            bg=theme["bg"],
+            fg=theme["fg"],
+            selectcolor=theme["select_bg"],
+            font=fonts["primary"]
+        )
+        auto_send_check.pack(anchor='w', padx=10, pady=5)
+
+        # ===== CONFIGURACIONES AVANZADAS =====
         advanced_frame = tk.LabelFrame(
             main_frame,
             text="Configuraciones Avanzadas",
@@ -1390,7 +1670,7 @@ class ConfigWindow:
             fg=theme["fg"],
             font=fonts["primary"]
         )
-        advanced_frame.pack(fill='x', pady=(20, 10))
+        advanced_frame.pack(fill='x', pady=(0, 15))
 
         # Auto-corrección
         self.auto_correct_var = tk.BooleanVar(value=self.config.get('auto_correct', True))
@@ -1431,15 +1711,15 @@ class ConfigWindow:
         )
         stats_check.pack(anchor='w', padx=10, pady=5)
 
-        # === BOTONES ===
+        # ===== BOTONES =====
         button_frame = tk.Frame(main_frame, bg=theme["bg"])
         button_frame.pack(fill='x', pady=(20, 0))
 
-        # Botón probar
-        test_button = tk.Button(
+        # Botón probar Azure
+        test_azure_button = tk.Button(
             button_frame,
-            text=texts["test_connection"],
-            command=self.test_connection,
+            text="Probar Azure",
+            command=self.test_azure_connection,
             bg=theme["accent"],
             fg="white",
             font=fonts["primary"],
@@ -1448,7 +1728,22 @@ class ConfigWindow:
             relief='flat',
             cursor='hand2'
         )
-        test_button.pack(side='left', padx=(0, 10))
+        test_azure_button.pack(side='left', padx=(0, 10))
+
+        # Botón probar Claude
+        test_claude_button = tk.Button(
+            button_frame,
+            text="Probar Claude",
+            command=self.test_claude_connection,
+            bg=theme["claude"],
+            fg="white",
+            font=fonts["primary"],
+            padx=15,
+            pady=8,
+            relief='flat',
+            cursor='hand2'
+        )
+        test_claude_button.pack(side='left', padx=(0, 10))
 
         # Botón guardar
         save_button = tk.Button(
@@ -1480,15 +1775,15 @@ class ConfigWindow:
         )
         cancel_button.pack(side='right')
 
-    def test_connection(self):
+    def test_azure_connection(self):
         """Probar conexión con Azure"""
         try:
-            key = self.key_entry.get().strip()
-            region = self.region_var.get()
-            language = self.lang_var.get()
+            key = self.azure_key_entry.get().strip()
+            region = self.azure_region_var.get()
+            language = self.azure_lang_var.get()
 
             if not key or not region:
-                messagebox.showerror("Error", "Por favor complete todos los campos")
+                messagebox.showerror("Error", "Por favor complete todos los campos de Azure")
                 return
 
             # Mostrar mensaje de prueba
@@ -1502,30 +1797,58 @@ class ConfigWindow:
             temp_recognizer = speechsdk.SpeechRecognizer(speech_config=temp_config)
 
             messagebox.showinfo("Éxito", "✅ Conexión exitosa con Azure Speech")
-            self.parent.log_to_gui("✅ Prueba de conexión exitosa")
+            self.parent.log_to_gui("✅ Prueba de conexión Azure exitosa")
 
         except Exception as e:
-            error_msg = f"Error probando conexión: {e}"
+            error_msg = f"Error probando conexión Azure: {e}"
+            messagebox.showerror("Error", error_msg)
+            self.parent.log_to_gui(f"❌ {error_msg}")
+
+    def test_claude_connection(self):
+        """Probar conexión con Claude"""
+        try:
+            claude_key = self.claude_key_entry.get().strip()
+
+            if not claude_key:
+                messagebox.showerror("Error", "Por favor ingrese la API key de Claude")
+                return
+
+            # Mostrar mensaje de prueba
+            self.parent.log_to_gui("🤖 Probando conexión Claude...")
+
+            # Crear instancia temporal de Claude
+            temp_claude = ClaudeIntegration(claude_key)
+
+            # Enviar mensaje de prueba
+            test_response = temp_claude.send_medical_text("Prueba de conexión", context="test")
+
+            messagebox.showinfo("Éxito", f"✅ Conexión exitosa con Claude\n\nRespuesta: {test_response[:100]}...")
+            self.parent.log_to_gui("✅ Prueba de conexión Claude exitosa")
+
+        except Exception as e:
+            error_msg = f"Error probando conexión Claude: {e}"
             messagebox.showerror("Error", error_msg)
             self.parent.log_to_gui(f"❌ {error_msg}")
 
     def save_config(self):
         """Guardar configuración"""
         try:
-            # Validar campos
-            key = self.key_entry.get().strip()
-            region = self.region_var.get()
-            language = self.lang_var.get()
+            # Validar campos Azure
+            azure_key = self.azure_key_entry.get().strip()
+            azure_region = self.azure_region_var.get()
+            azure_language = self.azure_lang_var.get()
 
-            if not key or not region:
-                messagebox.showerror("Error", "Por favor complete todos los campos obligatorios")
+            if not azure_key or not azure_region:
+                messagebox.showerror("Error", "Por favor complete todos los campos obligatorios de Azure")
                 return
 
             # Actualizar configuración
             self.config.update({
-                'azure_key': key,
-                'azure_region': region,
-                'azure_language': language,
+                'azure_key': azure_key,
+                'azure_region': azure_region,
+                'azure_language': azure_language,
+                'claude_api_key': self.claude_key_entry.get().strip(),
+                'auto_send_claude': self.auto_send_var.get(),
                 'auto_correct': self.auto_correct_var.get(),
                 'tts_enabled': self.tts_var.get(),
                 'show_stats': self.stats_var.get()
@@ -1534,6 +1857,9 @@ class ConfigWindow:
             # Aplicar a la aplicación principal
             self.parent.config.update(self.config)
             self.parent.save_config()
+
+            # Actualizar Claude integration
+            self.parent.claude = ClaudeIntegration(self.config.get('claude_api_key'))
 
             # Mostrar mensaje de éxito
             messagebox.showinfo("Éxito", "Configuración guardada correctamente")
@@ -1545,6 +1871,9 @@ class ConfigWindow:
             # Reconfigurar Azure si es necesario
             if not self.parent.azure_ready:
                 self.parent.root.after(1000, self.parent.delayed_azure_setup)
+
+            # Actualizar UI
+            self.parent.update_ui_state()
 
         except Exception as e:
             error_msg = f"Error guardando configuración: {e}"
@@ -1558,7 +1887,7 @@ def main():
     try:
         # Configurar logging antes de crear la aplicación
         logger = setup_logger()
-        logger.info(f"=== INICIANDO VOICE BRIDGE v{VERSION} ===")
+        logger.info(f"=== INICIANDO VOICE BRIDGE v{VERSION} + CLAUDE ===")
 
         # Verificar dependencias críticas
         try:
@@ -1568,6 +1897,14 @@ def main():
             logger.error("❌ Azure Speech SDK no encontrado")
             messagebox.showerror("Error",
                                  "Azure Speech SDK no está instalado.\n\nInstale con: pip install azure-cognitiveservices-speech")
+            return
+
+        try:
+            import requests
+            logger.info("✅ Requests disponible para Claude API")
+        except ImportError:
+            logger.error("❌ Requests no encontrado")
+            messagebox.showerror("Error", "Requests no está instalado.\n\nInstale con: pip install requests")
             return
 
         # Crear y ejecutar aplicación
