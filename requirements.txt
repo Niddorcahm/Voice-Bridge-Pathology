@@ -1,6 +1,6 @@
 # Voice Bridge Pathology - Python Dependencies
 # Core speech recognition and synthesis
-azure-cognitiveservices-speech==1.34.0
+azure-cognitiveservices-speech>=1.34.0
 
 # GUI framework (usually included with Python, but listed for completeness)
 # tkinter  # Standard library - no pip install needed
