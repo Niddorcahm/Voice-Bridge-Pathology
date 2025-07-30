@@ -1,5 +1,23 @@
 # Voice Bridge v2.2 - Release Notes
 
+## [2.2.4] - 2025-07-25 - "Advanced Audio Optimization"
+
+### 🎉 Added
+- **PipeWire optimization** for Ubuntu 24.04+ systems
+- **Advanced microphone detection** and automatic configuration
+- **Multiple audio backend support** (PipeWire, PulseAudio, ALSA)
+- **Comprehensive audio diagnostics** with system health checks
+
+### 🚀 Changed
+- **Enhanced recognition accuracy** through improved audio preprocessing
+- **Better handling of audio device changes** during sessions
+- **Optimized recognition timeouts** for medical terminology
+
+### 🐛 Fixed
+- **Audio device suspension** issues on modern Linux distributions
+- **Recognition startup failures** on systems with complex audio setups
+- **Microphone permission** handling improvements
+
 ## [2.2.3] - 2025-07-22 - "Medical Terminology Enhancement"
 
 ### 🎉 Added
